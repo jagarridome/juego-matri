@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>¿Cuánto conoces a Javi &amp; Benja?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/brittany-signature" rel="stylesheet">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    /* ===== PALETTE
+       --bg:      #FAF8F3
+       --bg2:     #F0EDE6
+       --sakura:  #F2B8C6
+       --branch:  #C4A882
+       --text:    #2C2C2C
+       --text2:   #9A8F85
+       --gold:    #C9A96E
+       --sky:     #D6E8EF
+    ===== */
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: #FAF8F3;
+      color: #2C2C2C;
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* ===== CHERRY BLOSSOM HERO ===== */
+    .cherry-hero {
+      position: relative;
+      width: 100%;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background-color: #FAF8F3;
+    }
+    .cherry-hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 80px 32px;
+      width: 100%;
+    }
+    .title-eyebrow { text-shadow: none; }
+    .script-name   { filter: none; }
+    .cherry-divider {
+      width: 96px; height: 1px;
+      background: #C9A96E;
+      margin: 32px auto;
+    }
+
+    /* ===== LAYOUT ===== */
+    .app { position:relative; min-height:100dvh; }
+    .screen { display:none; min-height:100dvh; padding:20px 16px 48px; flex-direction:column; align-items:center; }
+    .screen.active { display:flex; }
+    .screen.center { justify-content:center; }
+    .container { width:100%; max-width:480px; }
+
+    /* ===== TYPOGRAPHY ===== */
+    .title {
+      font-family:'Raleway',sans-serif; font-size:1.65rem; font-weight:700; line-height:1.25; text-align:center;
+      color:#4a3824;
+    }
+    .title-sm { font-size:1.4rem; }
+    /* eyebrow label on home screen */
+    .title-eyebrow {
+      font-family:'Raleway',sans-serif; font-size:1.125rem; font-weight:300; letter-spacing:.3em;
+      text-transform:uppercase; color:#212123; text-align:center; margin-bottom:24px;
+    }
+    /* Brittany Signature for names: Javiera & Benjamín / J & B */
+    .script-name {
+      font-family:'Brittany Signature',cursive; font-size:clamp(3.75rem,12vw,8rem); line-height:1.2;
+      text-align:center; color:#212123; display:block; font-weight:normal;
+    }
+    .script-name-sm { font-size:2.8rem; }
+    .section-title { font-family:'Raleway',sans-serif; font-size:1.1rem; font-weight:700; color:#4a3824; margin-bottom:12px; }
+    .muted { color:#9A8F85; font-size:.9rem; }
+    .tc { text-align:center; }
+
+    /* ===== CARDS ===== */
+    .card {
+      background:rgba(255,255,255,.78); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      border:1px solid rgba(196,168,130,.18); border-radius:20px; padding:22px;
+      box-shadow:0 2px 16px rgba(196,168,130,.1);
+    }
+    .card-sm { padding:16px; border-radius:14px; }
+    .card-rose  { background:rgba(220,140,155,.12); border-color:rgba(196,168,130,.35); }
+    .card-gold  { background:rgba(201,169,110,.1);   border-color:rgba(185,155,90,.25); }
+    .card-purple{ background:rgba(180,130,180,.1);  border-color:rgba(160,100,160,.22); }
+    .card-green { background:rgba(100,190,130,.08); border-color:rgba(80,170,110,.28); }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      width:100%; padding:14px 24px; border-radius:50px;
+      font-family:'Raleway',sans-serif; font-size:1rem; font-weight:600;
+      cursor:pointer; border:none; text-decoration:none; color:white;
+      transition:all .2s cubic-bezier(.16,1,.32,1);
+    }
+    .btn:active { transform:scale(.97); }
+    .btn:disabled { opacity:.45; cursor:not-allowed; transform:none !important; }
+    .btn-primary { background:linear-gradient(135deg,#C4A882,#a8896a); box-shadow:0 4px 20px rgba(196,168,130,.4); }
+    .btn-primary:hover:not(:disabled) { box-shadow:0 6px 28px rgba(196,168,130,.6); }
+    .btn-gold { background:linear-gradient(135deg,#C9A96E,#b08848); box-shadow:0 4px 20px rgba(201,169,110,.38); }
+    .btn-gold:hover:not(:disabled) { box-shadow:0 6px 28px rgba(201,169,110,.55); }
+    .btn-outline { background:rgba(255,255,255,.7); border:1px solid rgba(196,168,130,.35); color:#6a5040; }
+    .btn-outline:hover:not(:disabled) { background:rgba(255,255,255,.9); }
+    .btn-sm { padding:10px 18px; font-size:.9rem; border-radius:50px; }
+
+    /* ===== INPUTS ===== */
+    .input {
+      width:100%; padding:14px 18px; font-size:1.05rem;
+      font-family:'Raleway',sans-serif; color:#2C2C2C;
+      background:rgba(255,255,255,.85); border:1px solid rgba(196,168,130,.28);
+      border-radius:12px; outline:none; transition:border-color .2s;
+    }
+    .input:focus { border-color:rgba(196,168,130,.6); }
+    .input::placeholder { color:#b8a09a; }
+
+    /* ===== BACK BUTTON ===== */
+    .back { display:flex; align-items:center; gap:6px; color:#9A8F85; font-size:.9rem; cursor:pointer; background:none; border:none; font-family:'Raleway',sans-serif; padding:8px 0; }
+    .back:hover { color:#2C2C2C; }
+
+    /* ===== COUNTER CHIP ===== */
+    .chip {
+      display:inline-flex; align-items:center; gap:8px; padding:8px 16px;
+      background:rgba(201,169,110,.16); border:1px solid rgba(185,155,90,.32);
+      border-radius:50px; font-size:.88rem; color:#7a6530; font-weight:500;
+    }
+    .dot-live { width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(.75)} }
+
+    /* ===== DIVIDER ===== */
+    .divider { height:1px; background:rgba(196,168,130,.14); margin:20px 0; }
+
+    /* ===== SPACING HELPERS ===== */
+    .mt-2{margin-top:8px} .mt-3{margin-top:12px} .mt-4{margin-top:16px}
+    .mt-6{margin-top:24px} .mt-8{margin-top:32px} .mt-10{margin-top:40px}
+    .mb-2{margin-bottom:8px} .mb-3{margin-bottom:12px} .mb-4{margin-bottom:16px}
+    .mb-6{margin-bottom:24px} .mb-8{margin-bottom:32px}
+    .flex-col { display:flex; flex-direction:column; gap:12px; }
+    .gap-2 { gap:8px; }
+
+    /* ===== HEARTS / DECORATION ===== */
+    .hearts { color:#C4A882; letter-spacing:6px; font-size:.9rem; text-align:center; }
+
+    /* ===== LEADERBOARD ===== */
+    .lb-row {
+      display:flex; align-items:center; gap:12px; padding:12px 14px;
+      border-radius:12px; background:rgba(255,255,255,.5); margin-bottom:8px;
+    }
+    .lb-row.gold-row { background:rgba(212,168,83,.12); border:1px solid rgba(180,130,50,.24); }
+    .lb-rank { font-family:'Raleway',sans-serif; font-size:1.1rem; font-weight:700; color:#b8a09a; width:28px; text-align:center; }
+    .lb-rank.gold { color:#7a6530; }
+    .lb-name { flex:1; font-weight:500; color:#2C2C2C; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .lb-score { font-family:'Raleway',sans-serif; font-size:1.1rem; font-weight:700; color:#C4A882; white-space:nowrap; }
+
+    /* ===== GALLERY ===== */
+    .gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    .gal-item { position:relative; border-radius:12px; overflow:hidden; aspect-ratio:3/4; background:rgba(194,86,110,.06); }
+    .gal-item img { width:100%;height:100%;object-fit:cover;display:block; }
+    .gal-caption {
+      position:absolute; bottom:0;left:0;right:0;
+      background:linear-gradient(transparent,rgba(60,30,30,.72)); padding:22px 8px 8px;
+      font-size:.78rem; color:white;
+    }
+    .gal-num { font-family:'Raleway',sans-serif; font-size:.95rem; font-weight:700; color:#e8c973; }
+    .empty { text-align:center; color:#9A8F85; padding:28px; font-size:.9rem; }
+
+    /* ===== ZONE CARDS ===== */
+    .zone-card {
+      display:flex; align-items:center; gap:16px; padding:18px;
+      border-radius:16px; background:rgba(255,255,255,.68);
+      border:1px solid rgba(196,168,130,.18); margin-bottom:12px;
+      cursor:pointer; transition:all .2s cubic-bezier(.16,1,.32,1);
+      box-shadow:0 1px 8px rgba(180,100,90,.07);
+    }
+    .zone-card:active { transform:scale(.98); }
+    .zone-card.done { background:rgba(100,190,130,.1); border-color:rgba(80,170,110,.28); }
+    .zone-emoji { font-size:2rem; }
+    .zone-info { flex:1; }
+    .zone-name { font-weight:600; color:#2C2C2C; }
+    .zone-st { font-size:.83rem; margin-top:2px; }
+    .zone-st.pending { color:#9A8F85; }
+    .zone-st.done { color:#2e8a50; }
+    .zone-arrow { font-size:1.4rem; color:#b8a09a; }
+
+    /* ===== PILLS ===== */
+    .pills { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+    .pill { padding:5px 13px; border-radius:50px; font-size:.78rem; font-weight:600; background:rgba(255,255,255,.65); border:1px solid rgba(194,86,110,.18); color:#9A8F85; }
+    .pill.done { background:rgba(100,190,130,.12); border-color:rgba(80,170,110,.32); color:#2e8a50; }
+
+    /* ===== PROGRESS BAR ===== */
+    .prog-bar { height:5px; background:rgba(196,168,130,.14); border-radius:3px; overflow:hidden; margin-bottom:8px; }
+    .prog-fill { height:100%; background:linear-gradient(90deg,#C4A882,#C9A96E); border-radius:3px; transition:width .4s ease; }
+
+    /* ===== INSTRUCTION STEPS ===== */
+    .inst-step { display:flex; align-items:center; gap:12px; padding:12px 16px; background:white; border:1px solid rgba(196,168,130,.2); border-radius:12px; line-height:1.5; font-size:.875rem; color:#2C2C2C; text-align:left; }
+    .inst-step-emoji { font-size:1.5rem; flex-shrink:0; }
+    /* ===== Q FEEDBACK ===== */
+    .q-feedback { font-family:'Raleway',sans-serif; font-size:1.05rem; text-align:center; padding:12px 0; transition:opacity .3s; }
+    .q-feedback.correct { color:#5a8c6e; }
+    .q-feedback.wrong   { color:#9A8F85; }
+
+    /* ===== ZONE INTRO ===== */
+    .big-emoji { font-size:5rem; display:block; text-align:center; animation:bounceY .7s ease-in-out infinite alternate; }
+    @keyframes bounceY { from{transform:translateY(0)} to{transform:translateY(-12px)} }
+
+    /* ===== QUESTION ===== */
+    .q-zone-label { display:inline-block; padding:4px 13px; border-radius:50px; font-size:.78rem; font-weight:600; margin-bottom:16px; }
+    .label-bar    { background:rgba(160,100,160,.14); color:#7a4090; border:1px solid rgba(160,100,160,.28); }
+    .label-fotos  { background:rgba(196,168,130,.14);  color:#8a2848; border:1px solid rgba(196,168,130,.35); }
+    .label-snacks { background:rgba(185,155,90,.14);  color:#7a6530; border:1px solid rgba(185,155,90,.3); }
+
+    .q-text { font-family:'Raleway',sans-serif; font-size:1.15rem; font-weight:500; color:#2C2C2C; line-height:1.5; text-align:center; margin-bottom:22px; }
+    .opts { display:flex; flex-direction:column; gap:10px; }
+    .opt {
+      padding:14px 18px; border-radius:12px; text-align:left; width:100%;
+      background:rgba(255,255,255,.72); border:1px solid rgba(196,168,130,.2);
+      color:#2C2C2C; font-size:.93rem; font-weight:500; cursor:pointer;
+      font-family:'Raleway',sans-serif; transition:all .18s;
+    }
+    .opt:hover:not(:disabled) { background:rgba(255,255,255,.95); border-color:rgba(196,168,130,.45); }
+    .opt:active { transform:scale(.98); }
+    .opt:disabled { cursor:not-allowed; }
+    .opt.correct { background:rgba(90,140,110,.1); border-color:rgba(90,140,110,.5); color:#5a8c6e; }
+    .opt.wrong   { background:rgba(184,132,90,.1); border-color:rgba(184,132,90,.4); color:#b8845a; }
+
+    /* ===== SCORE DOTS ===== */
+    .dots { display:flex; gap:8px; justify-content:center; margin:10px 0; }
+    .dot { width:16px;height:16px;border-radius:50%;border:2px solid rgba(90,140,110,.3);background:transparent;transition:all .25s; }
+    .dot.correct { background:#5a8c6e; border-color:#5a8c6e; }
+    .dot.wrong   { background:#c0634a; border-color:#c0634a; }
+
+    /* ===== UPLOAD ===== */
+    .upload-area {
+      position:relative; border:2px dashed rgba(180,130,50,.38); border-radius:16px;
+      padding:32px 20px; text-align:center; cursor:pointer; transition:all .2s;
+      display:block; background:rgba(255,255,255,.55);
+    }
+    .upload-area:hover { border-color:rgba(180,130,50,.65); background:rgba(212,168,83,.06); }
+    .upload-area input[type="file"] { position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%; }
+    .upload-preview { width:100%;max-height:280px;object-fit:contain;border-radius:12px;margin-top:12px; }
+
+    /* ===== TOAST ===== */
+    #toast {
+      position:fixed; bottom:28px; left:50%; z-index:200;
+      transform:translateX(-50%) translateY(110px);
+      background:rgba(255,250,245,.96); backdrop-filter:blur(20px);
+      border:1px solid rgba(194,86,110,.2); border-radius:16px;
+      padding:14px 22px; font-size:.95rem; font-weight:500; color:#2C2C2C;
+      transition:transform .35s cubic-bezier(.16,1,.32,1);
+      max-width:320px; width:90%; text-align:center;
+      box-shadow:0 4px 20px rgba(180,100,90,.14);
+    }
+    #toast.show { transform:translateX(-50%) translateY(0); }
+    #toast.ok   { border-color:rgba(80,170,110,.4); color:#2e7a46; }
+    #toast.fail { border-color:rgba(210,80,80,.3);  color:#a03030; }
+
+    /* ===== WINNER / RAFFLE ===== */
+    .winner-num {
+      font-family:'Raleway',sans-serif; font-size:5rem; font-weight:700;
+      background:linear-gradient(135deg,#b08848,#C4A882);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .num-grid { display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-height:180px;overflow-y:auto; }
+    .num-chip { padding:7px 14px;background:rgba(255,255,255,.75);border-radius:8px;font-family:'Raleway',sans-serif;font-size:1rem;color:#7a6530;border:1px solid rgba(185,155,90,.28); }
+    .raffle-pointer { font-size:1.8rem; text-align:center; margin-bottom:-6px; z-index:10; }
+
+    /* ===== LOADER ===== */
+    .loader { display:inline-block;width:20px;height:20px;border:2px solid rgba(194,86,110,.2);border-top-color:#C4A882;border-radius:50%;animation:spin .8s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ===== QR OVERRIDES ===== */
+    #qr-reader { width:100%; border-radius:16px; overflow:hidden; }
+    #qr-reader video { border-radius:12px; }
+    #qr-reader img { border-radius:8px; }
+  </style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<div class="app">
+
+  <!-- ══════════════════════════════════════════════════
+       HOME
+  ══════════════════════════════════════════════════ -->
+  <div class="screen active" id="screen-home" style="padding-top:0;padding-left:0;padding-right:0;">
+    <!-- Cherry blossom hero — full width, full height -->
+    <div class="cherry-hero" style="align-self:stretch;">
+      <img src="cherry-bg.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:0;" alt="">
+      <div style="position:absolute;inset:0;background:rgba(255,255,255,0.40);z-index:1;"></div>
+      <div class="cherry-hero-content">
+        <div class="title-eyebrow">¿Cuánto conoces a?</div>
+        <span class="script-name">Javi &amp; Benja</span>
+        <div class="cherry-divider"></div>
+      </div>
+    </div>
+    <div class="container" style="padding:0 16px 48px">
+      <div style="text-align:center;margin:20px 0 16px">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,169,110,.14);border:1px solid rgba(185,155,90,.28);border-radius:50px;padding:10px 20px">
+          <span style="font-size:1.1rem">🎰</span>
+          <span style="font-family:'Raleway',sans-serif;font-size:.9rem;font-weight:600;color:#7a6530">Sorteo a las 00:00am del 25 de abril</span>
+        </div>
+      </div>
+
+      <!-- Winner banner (shown after deadline) -->
+      <div id="winner-banner" style="display:none" class="card mb-4" style="text-align:center;border-color:rgba(201,169,110,.4);background:rgba(201,169,110,.08)">
+        <div style="font-size:2rem;margin-bottom:8px">🏆</div>
+        <div style="font-family:'Raleway',sans-serif;font-size:1.1rem;font-weight:700;color:#7a6530;margin-bottom:4px">¡Ganador del sorteo!</div>
+        <div id="wb-name" style="font-family:'Brittany Signature',cursive;font-size:2rem;color:#4a3824;margin-bottom:8px"></div>
+        <div id="wb-num" style="font-family:'Raleway',sans-serif;font-size:.9rem;color:#a89e94;margin-bottom:12px"></div>
+        <img id="wb-photo" src="" alt="foto ganador" style="display:none;width:120px;height:120px;object-fit:cover;border-radius:50%;border:3px solid rgba(201,169,110,.5);margin:0 auto">
+      </div>
+
+      <!-- How to play -->
+      <div class="card mb-4">
+        <div class="section-title" style="margin-bottom:14px">¿Cómo jugar?</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+          <div class="inst-step"><span class="inst-step-emoji">🏠</span><span>Hay <strong>3 zonas</strong> en el evento</span></div>
+          <div class="inst-step"><span class="inst-step-emoji">📱</span><span>En cada zona hay un <strong>código QR</strong></span></div>
+          <div class="inst-step"><span class="inst-step-emoji">🔓</span><span>Escanea el QR para <strong>activar esa zona</strong></span></div>
+          <div class="inst-step"><span class="inst-step-emoji">✅</span><span>Responde <strong>2 preguntas</strong> y timbra tu cartón</span></div>
+          <div class="inst-step"><span class="inst-step-emoji">🏆</span><span>Completa las <strong>3 zonas</strong> y sube una foto para participar</span></div>
+          <div class="inst-step"><span class="inst-step-emoji">🔄</span><span><strong>Repite</strong> y suma oportunidades de ganar</span></div>
+        </div>
+        <button class="btn btn-primary" id="home-play-btn" onclick="startFromHome()">🎮 ¡Jugar!</button>
+      </div>
+
+      <div class="tc mb-4">
+        <span class="chip">
+          <span class="dot-live"></span>
+          <span id="count-display">0</span> registros recibidos
+        </span>
+      </div>
+
+      <!-- Gallery -->
+      <div class="card mt-4">
+        <div class="section-title">📸 Participando</div>
+        <div id="gallery" class="gallery"></div>
+        <div id="gallery-empty" class="empty">Las fotos aparecerán aquí 🤳</div>
+      </div>
+
+      <div class="tc mt-8">
+        <div id="home-nums-card" style="display:none;margin-top:16px" class="card">
+          <div style="color:#a89e94;font-size:.78rem;margin-bottom:8px">Tus números 🎟️ — <span id="home-nums-name" style="color:#b08a6e"></span></div>
+          <div id="home-nums-list" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+          <button onclick="playAgain()" style="background:none;border:none;color:#b08a6e;font-family:'Raleway',sans-serif;font-size:.78rem;cursor:pointer;margin-top:10px;text-decoration:underline;text-underline-offset:3px">Jugar de nuevo</button>
+        </div>
+        <div class="mt-4">
+          <a href="#" onclick="goToRaffle(event)" style="color:#9A8F85;font-size:.75rem;text-decoration:none">Acceso sorteo 🎰</a>
+        </div>
+      </div>
+    </div><!-- /container -->
+  </div><!-- /screen-home -->
+
+  <!-- ══════════════════════════════════════════════════
+       INSTRUCTIONS
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-instructions">
+    <div class="container" style="max-width:448px;text-align:center">
+      <button class="back" onclick="showScreen('home')">← Volver</button>
+
+      <div style="margin-top:32px;margin-bottom:32px">
+        <div id="inst-greeting" style="font-family:'Raleway',sans-serif;font-size:1rem;color:#C4A882;margin-bottom:8px;display:none"></div>
+        <div style="font-family:'Raleway',sans-serif;font-size:1.875rem;font-weight:300;color:#212123;margin-bottom:8px">¿Cómo jugar?</div>
+        <div style="width:64px;height:1px;background:#C4A882;margin:16px auto 0"></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:32px">
+        <div class="inst-step"><span class="inst-step-emoji">🏠</span><span>Hay <strong>3 zonas</strong> en el evento</span></div>
+        <div class="inst-step"><span class="inst-step-emoji">📱</span><span>En cada zona hay un <strong>código QR</strong></span></div>
+        <div class="inst-step"><span class="inst-step-emoji">🔓</span><span>Escanea el QR para <strong>activar esa zona</strong></span></div>
+        <div class="inst-step"><span class="inst-step-emoji">✅</span><span>Responde <strong>2 preguntas correctas</strong> y timbra tu cartón</span></div>
+        <div class="inst-step"><span class="inst-step-emoji">🏆</span><span>Completa tu cartón y <strong>sube una foto</strong> para participar</span></div>
+        <div class="inst-step"><span class="inst-step-emoji">🔄</span><span><strong>Repite</strong> y suma oportunidades de ganar</span></div>
+      </div>
+
+      <button onclick="showScreen('name')" style="width:100%;padding:14px 24px;border-radius:50px;background:#C4A882;border:none;color:white;font-family:'Raleway',sans-serif;font-size:.875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;">¡Entendido, vamos!</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       NAME ENTRY
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-name">
+    <div class="container">
+      <button class="back" onclick="showScreen('instructions')">← Volver</button>
+      <div class="tc mt-6 mb-8">
+        <div class="title title-sm">¿Cómo te llamas?</div>
+        <div class="muted mt-2">Con este nombre participarás en el juego</div>
+      </div>
+      <div class="card flex-col">
+        <input class="input" id="name-input" type="text" placeholder="Tu nombre aquí..." maxlength="30" autocomplete="off" onkeydown="if(event.key==='Enter')startGame()">
+        <button class="btn btn-primary" onclick="startGame()">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       ZONES
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-zones">
+    <div class="container">
+      <div class="tc mt-6 mb-4">
+        <div class="hearts">♥ &nbsp; ♥ &nbsp; ♥</div>
+        <div class="title title-sm mt-2" id="zones-hello"></div>
+        <div class="muted mt-2">Completa las 3 zonas escaneando el QR de cada una.<br>Puedes hacerlo en el orden que prefieras.</div>
+      </div>
+
+      <div id="zone-nums-card" class="card mb-4" style="display:none;text-align:center">
+        <div style="color:#a89e94;font-size:.8rem;margin-bottom:8px">Tus números 🎟️</div>
+        <div id="zone-nums-list" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="section-title" style="margin-bottom:10px">Tu progreso</div>
+        <div class="pills" id="zone-pills">
+          <div class="pill" id="pill-bar">🍹 Bar</div>
+          <div class="pill" id="pill-fotos">📸 Fotos</div>
+          <div class="pill" id="pill-snacks">🧀 Snacks</div>
+        </div>
+        <div class="mt-3">
+          <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+          <div class="muted" style="text-align:right;font-size:.8rem" id="prog-text">0 de 3 completadas</div>
+        </div>
+      </div>
+
+      <div class="zone-card" id="zc-bar" onclick="scanZone('bar')">
+        <span class="zone-emoji">🍹</span>
+        <div class="zone-info">
+          <div class="zone-name">Bar</div>
+          <div class="zone-st pending" id="zst-bar">Pendiente · Escanea el QR</div>
+        </div>
+        <span class="zone-arrow" id="zarr-bar">→</span>
+      </div>
+      <div class="zone-card" id="zc-fotos" onclick="scanZone('fotos')">
+        <span class="zone-emoji">📸</span>
+        <div class="zone-info">
+          <div class="zone-name">Fotos</div>
+          <div class="zone-st pending" id="zst-fotos">Pendiente · Escanea el QR</div>
+        </div>
+        <span class="zone-arrow" id="zarr-fotos">→</span>
+      </div>
+      <div class="zone-card" id="zc-snacks" onclick="scanZone('snacks')">
+        <span class="zone-emoji">🧀</span>
+        <div class="zone-info">
+          <div class="zone-name">Mesa de Snacks</div>
+          <div class="zone-st pending" id="zst-snacks">Pendiente · Escanea el QR</div>
+        </div>
+        <span class="zone-arrow" id="zarr-snacks">→</span>
+      </div>
+
+      <div id="all-done-cta" style="display:none" class="mt-4">
+        <div class="divider"></div>
+        <div class="tc mb-4" style="color:#2e8a50;font-size:1.05rem">🎉 ¡Completaste las 3 zonas!</div>
+        <button class="btn btn-gold" onclick="showAllComplete()">Sube una foto con tu cartón completo</button>
+      </div>
+      <div id="play-again-cta" style="display:none" class="mt-4">
+        <div class="divider"></div>
+        <button class="btn btn-primary" onclick="playAgain()">Jugar de nuevo</button>
+      </div>
+
+      <button onclick="showScreen('home')" style="background:none;border:none;color:#9A8F85;font-family:'Raleway',sans-serif;font-size:.85rem;cursor:pointer;padding:12px 8px;text-decoration:underline;text-underline-offset:3px;">Volver al inicio</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       QR SCANNER
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-qr">
+    <div class="container">
+      <button class="back" onclick="stopQrBack()">← Volver</button>
+      <div class="tc mt-4 mb-4">
+        <div class="title title-sm">Escanear QR</div>
+        <div class="muted mt-2" id="qr-hint">Apunta la cámara al código QR de la zona</div>
+      </div>
+      <div id="qr-reader"></div>
+      <div class="muted tc mt-4" style="font-size:.78rem">También puedes subir una foto del QR desde tu galería</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       ZONE INTRO
+  ══════════════════════════════════════════════════ -->
+  <div class="screen center" id="screen-zone-intro">
+    <div class="container tc">
+      <span class="big-emoji" id="zi-emoji"></span>
+      <div class="title title-sm mt-4" id="zi-title"></div>
+      <div class="card mt-4 mb-4">
+        <p id="zi-msg" style="color:#4a3824;line-height:1.65;font-size:.97rem"></p>
+      </div>
+      <div class="card card-purple mb-4">
+        <div style="color:#c49bea;font-size:.88rem">Necesitas <strong>2 respuestas correctas</strong> para completar esta zona y obtener tu timbre 🎟️</div>
+      </div>
+      <button class="btn btn-primary" onclick="startZoneQuestions()">¡Vamos!</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       QUESTION
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-question">
+    <div class="container" style="max-width:448px">
+      <button class="back" onclick="showScreen('zones')">← Volver</button>
+      <div class="tc mt-4 mb-4">
+        <div id="q-emoji" style="font-size:1.875rem"></div>
+        <div id="q-zone-name" style="font-family:'Raleway',sans-serif;font-size:1.25rem;color:#212123;margin-top:6px"></div>
+        <div class="dots mt-3" id="q-dots"></div>
+      </div>
+      <div class="card mb-4" id="q-card">
+        <div class="q-text" id="q-text"></div>
+        <div class="opts" id="q-opts"></div>
+      </div>
+      <div id="q-feedback" class="q-feedback" style="display:none"></div>
+      <div id="q-next-area" style="display:none;margin-top:8px">
+        <button class="btn btn-outline" id="q-next-btn" onclick="nextQuestion()">Siguiente pregunta</button>
+      </div>
+      <div id="q-done-area" style="display:none;margin-top:12px">
+        <div class="tc mb-3" style="color:#5a8c6e;font-size:1rem">✅ ¡Zona completada!</div>
+        <button class="btn btn-primary" onclick="zoneCompleted()">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       ZONE COMPLETE
+  ══════════════════════════════════════════════════ -->
+  <div class="screen center" id="screen-zone-complete">
+    <div class="container tc">
+      <span style="font-size:4.5rem;display:block;animation:bounceY .7s ease-in-out infinite alternate">🎉</span>
+      <div class="title title-sm mt-4" id="zc-title"></div>
+      <div class="card card-green mt-4 mb-4">
+        <div style="color:#2e8a50;font-size:.95rem">¡Ya puedes timbrar tu cartón! 🎟️</div>
+      </div>
+      <div id="zc-btns" class="flex-col"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       ALL COMPLETE → SELFIE
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-all-complete">
+    <div class="container">
+      <div class="tc mt-6 mb-4">
+        <span style="font-size:3rem;display:block">🎊</span>
+        <div class="title title-sm mt-3">¡Completaste las 3 zonas!</div>
+        <div class="muted mt-2">Solo falta subir una foto mostrando tu cartón completo</div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="section-title">📸 Sube tu foto</div>
+        <div class="muted mb-4" style="font-size:.83rem">Muestra tu cartón con los <strong>3 timbres completos</strong> — esto valida tu participación</div>
+        <label class="upload-area" id="upload-area">
+          <input type="file" accept="image/*" id="selfie-input" onchange="previewSelfie(event)">
+          <div id="upload-ph">
+            <div style="font-size:2.5rem;margin-bottom:8px">🤳</div>
+            <div style="font-weight:600;margin-bottom:4px">Toca para tomar o subir foto</div>
+          </div>
+          <img id="selfie-prev" class="upload-preview" style="display:none" alt="preview">
+        </label>
+      </div>
+
+      <button class="btn btn-gold" id="submit-btn" onclick="submitParticipation()" disabled>¡Participar por el premio! 🎁</button>
+      <div id="submit-loader" style="display:none;text-align:center;margin-top:12px">
+        <span class="loader"></span>
+        <span style="margin-left:8px;color:#7a706a">Guardando...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       SUBMITTED
+  ══════════════════════════════════════════════════ -->
+  <div class="screen center" id="screen-submitted">
+    <div class="container tc">
+      <span style="font-size:5rem;display:block">🎉</span>
+      <div class="title title-sm mt-4">¡Ya estás participando!</div>
+      <div class="card mt-6 mb-4">
+        <div style="color:#a89e94;margin-bottom:10px;font-size:.9rem">Tu número de participante es</div>
+        <div class="winner-num" id="part-num"></div>
+        <div class="divider"></div>
+        <div style="color:#e8c973;font-size:.88rem">El sorteo es a las <strong>12:00am</strong> 🎊</div>
+      </div>
+      <div id="part-nums-card" class="card mb-4" style="display:none">
+        <div style="color:#a89e94;font-size:.83rem;margin-bottom:8px">Todos tus números 🎟️</div>
+        <div id="part-nums-list" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+      </div>
+      <div class="card card-green mb-4">
+        <div style="color:#4ade80;font-size:.88rem">Tu foto ya aparece en la galería ✨</div>
+      </div>
+      <button class="btn btn-primary mt-4" onclick="playAgain()">Jugar de nuevo</button>
+      <button onclick="showScreen('home')" style="background:none;border:none;color:#9A8F85;font-family:'Raleway',sans-serif;font-size:.85rem;cursor:pointer;padding:12px 8px;text-decoration:underline;text-underline-offset:3px;">Volver al inicio</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       CLOSED
+  ══════════════════════════════════════════════════ -->
+  <div class="screen center" id="screen-closed">
+    <div class="container tc">
+      <span style="font-size:5rem;display:block">🔒</span>
+      <div class="title title-sm mt-4">El juego ha cerrado</div>
+      <div class="card mt-6 mb-4">
+        <p style="color:#a89e94;line-height:1.65;font-size:.9rem">El juego estuvo disponible hasta el 24 de abril de 2026. El sorteo ya fue realizado. ¡Gracias a todos los que participaron! 🎊</p>
+      </div>
+      <button class="btn btn-outline mt-4" onclick="showScreen('home')">Ver resultados</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       RAFFLE
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-raffle">
+    <div class="container">
+      <button class="back mt-2" onclick="showScreen('home')">← Volver</button>
+
+      <!-- Password gate -->
+      <div id="raffle-gate" class="card mt-4">
+        <div class="title title-sm tc mb-2">🔐 Acceso exclusivo</div>
+        <div class="muted tc mb-6" style="font-size:.88rem">Solo para los novios 🥂</div>
+        <div class="flex-col">
+          <input class="input" type="password" id="raffle-pw" placeholder="Código secreto..." onkeydown="if(event.key==='Enter')checkPw()">
+          <button class="btn btn-primary" onclick="checkPw()">Entrar</button>
+        </div>
+        <div id="pw-err" style="color:#f87171;font-size:.83rem;margin-top:8px;text-align:center;display:none">Código incorrecto 🙈</div>
+      </div>
+
+      <!-- Raffle main -->
+      <div id="raffle-main" style="display:none">
+        <div class="tc mt-4 mb-4">
+          <div class="title title-sm">🎰 Ruleta del sorteo</div>
+          <div class="muted mt-2">Participantes: <strong id="raffle-count" style="color:#e8c973">0</strong></div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="section-title">Números participantes</div>
+          <div class="num-grid" id="raffle-nums"></div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="section-title">Ranking de chances</div>
+          <div style="font-size:.78rem;color:#9A8F85;margin-bottom:12px;line-height:1.4">Más participaciones = más chances en el sorteo.</div>
+          <div id="lb-list"><div class="empty">Cargando...</div></div>
+          <div id="lb-more" style="display:none;text-align:center;margin-top:12px">
+            <button onclick="expandLeaderboard()" style="background:none;border:none;color:#b08a6e;font-family:'Raleway',sans-serif;font-size:.85rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Ver más</button>
+          </div>
+        </div>
+
+        <div class="tc mb-2 raffle-pointer">▼</div>
+        <canvas id="raffle-canvas" width="340" height="340" style="width:100%;max-width:340px;border-radius:50%;box-shadow:0 0 40px rgba(139,88,196,.4);display:block;margin:0 auto;"></canvas>
+
+        <div class="mt-4">
+          <button class="btn btn-gold" id="spin-btn" onclick="spinWheel()">🎰 ¡Girar!</button>
+          <div id="spin-locked" class="muted tc mt-2" style="font-size:.83rem;display:none">El sorteo se habilita a las 12:00am del 25 de abril de 2026</div>
+        </div>
+
+        <div id="winner-area" class="card tc mt-4" style="display:none">
+          <div style="color:#a89e94;margin-bottom:6px">🏆 ¡El número ganador es!</div>
+          <div class="winner-num" id="winner-num"></div>
+          <div id="winner-name" style="color:#d4a0c0;font-size:1.05rem;margin-top:8px"></div>
+          <button id="save-winner-btn" class="btn btn-gold mt-4" style="display:none">Guardar ganador</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ================================================================
+// ⚙️  CONFIGURATION — edit these values
+// ================================================================
+const GAS_API_URL     = 'https://ejzotqfdgmrvxjkvidkg.supabase.co/functions/v1/matri-api';
+const RAFFLE_PASSWORD = 'patoneta';               // contraseña del sorteo
+const GAME_DEADLINE    = new Date('2026-04-24T23:59:59-03:00');
+const SPIN_UNLOCK      = new Date('2026-04-25T00:00:00-03:00');
+
+// QR codes: these strings must be encoded in the physical QR codes
+const QR_MAP = {
+  'JAVI_BENJA_BAR_2026':    'bar',
+  'JAVI_BENJA_FOTOS_2026':  'fotos',
+  'JAVI_BENJA_SNACKS_2026': 'snacks'
+};
+
+const ZONE_INFO = {
+  bar:    { name:'Bar',             emoji:'🍹', msg:'Aprovecha de pedir algo rico mientras juegas 🍸',           label:'label-bar'    },
+  fotos:  { name:'Fotos',           emoji:'📸', msg:'Aprovecha de sacarte una foto para el recuerdo 🤳',         label:'label-fotos'  },
+  snacks: { name:'Mesa de Snacks',  emoji:'🧀', msg:'Aprovecha de picar algo mientras juegas 🫒',               label:'label-snacks' }
+};
+
+// ================================================================
+// QUESTIONS
+// ================================================================
+const Q = {
+  javi: [
+    {q:'¿Cuál es el segundo nombre de Javi?',                        opts:['Carolina','Valentina','Raquel'],                               emojis:['🌺','🌸','🌹'],                            a:'Carolina'},
+    {q:'¿Cuándo es el cumpleaños de Javi?',                          opts:['28 de junio','29 de enero','25 de julio'],                     emojis:['❄️','☀️','🌨️'],                            a:'28 de junio'},
+    {q:'¿Cuál es el signo zodiacal de Javi?',                        opts:['Cáncer','Escorpio','Virgo'],                                   emojis:['🦀','🦂','♍'],                             a:'Cáncer'},
+    {q:'¿Cuál es la profesión de Javi?',                             opts:['Psicóloga','Kinesióloga','Diseñadora'],                        emojis:['🧠','💪','🎨'],                            a:'Psicóloga'},
+    {q:'¿Cuál es el apodo de la infancia de Javi?',                  opts:['Jape','Punto','Javo'],                                         emojis:['😄','🔵','😎'],                            a:'Jape'},
+    {q:'¿Cuántos hermanos tiene Javi?',                              opts:['2','1','3'],                                                   emojis:['👫','👤','👨‍👩‍👧'],                          a:'2'},
+    {q:'¿Cómo se llaman los perros de Javi?',                        opts:['Django y Pato','Ramón y César','Terry e Igor'],                emojis:['🐕🦆','🐶🐶','🐾🐾'],                     a:'Django y Pato'},
+    {q:'¿Cuál fue la primera mascota de Javi?',                      opts:['Un cuye llamado Stitch','Un hámster llamado Pikachu','Un gato llamado Michi'], emojis:['🐹','⚡','🐱'],          a:'Un cuye llamado Stitch'},
+    {q:'¿Cuál es la bebida favorita de Javi?',                       opts:['Coca Light','Pepsi','Agua con gas'],                           emojis:['🥤','🍶','💧'],                            a:'Coca Light'},
+    {q:'¿Cuál es la serie favorita de Javi?',                        opts:["Grey's Anatomy",'Friends','The Office'],                       emojis:['🏥','☕','💼'],                            a:"Grey's Anatomy"},
+    {q:'¿Cuál es la película favorita de Javi?',                     opts:['Harry Potter y el Cáliz de Fuego','Titanic','Orgullo y Prejuicio'], emojis:['🏆','🚢','📖'],                    a:'Harry Potter y el Cáliz de Fuego'},
+    {q:'¿Cuál es el cantante favorito de Javi?',                     opts:['Taylor Swift','Beyoncé','Shakira'],                            emojis:['🎤','👑','💃'],                            a:'Taylor Swift'},
+    {q:'¿Cuál fue el primer concierto de Javi?',                     opts:['High School Musical','Jonas Brothers','RBD'],                  emojis:['🎭','🎸','🎶'],                            a:'High School Musical'},
+    {q:'¿Cuál fue el último concierto de Javi?',                     opts:['Kendrick Lamar','Olivia Rodrigo','Bad Bunny'],                 emojis:['🎤','🎀','🐰'],                            a:'Kendrick Lamar'},
+    {q:'¿Cuál es el personaje ficticio favorito de Javi?',           opts:['Hermione','Bella Swan','Fiona'],                               emojis:['🪄','🧛','👸'],                            a:'Hermione'},
+    {q:'¿Qué colecciona Javi?',                                      opts:['Funko Pops y merch de Harry Potter','Postales y stickers','Pins y llaveros'], emojis:['🧸','✉️','📌'],          a:'Funko Pops y merch de Harry Potter'},
+    {q:'¿Qué le da más miedo a Javi?',                               opts:['Viajar en avión','Las alturas','Las arañas'],                  emojis:['✈️','🏔️','🕷️'],                           a:'Viajar en avión'},
+    {q:'¿Cuál es el sabor de helado favorito de Javi?',              opts:['Menta chips','Vainilla','Frutilla'],                           emojis:['🌿','🍦','🍓'],                            a:'Menta chips'},
+    {q:'¿Cuál es el cereal favorito de Javi?',                       opts:['Pillows','Chocapic','Zucaritas'],                              emojis:['🍫','🍪','🐯'],                            a:'Pillows'},
+    {q:'¿Cuál es la red social favorita de Javi?',                   opts:['TikTok','Instagram','Twitter'],                               emojis:['🎵','📸','🐦'],                            a:'TikTok'},
+    {q:'¿Cuánto mide Javi?',                                         opts:['1,57','1,62','1,55'],                                          emojis:['📏','📐','🔢'],                            a:'1,57'},
+    {q:'¿Qué comida no puede faltar en el plato de Javi?',           opts:['Choclo','Papas fritas','Arroz'],                               emojis:['🌽','🍟','🍚'],                            a:'Choclo'},
+    {q:'¿Cuál es la comida favorita del día para Javi?',             opts:['Desayuno','Almuerzo','Cena'],                                  emojis:['🌅','☀️','🌙'],                            a:'Desayuno'},
+    {q:'¿Cuál es el snack favorito de Javi?',                        opts:['Papas Lays ciboulette','Doritos','Cheezles'],                  emojis:['🥔','🌮','🧀'],                            a:'Papas Lays ciboulette'},
+    {q:'¿Cuál es el juego favorito de Javi?',                        opts:['Los Sims','Minecraft','Animal Crossing'],                      emojis:['🏠','⛏️','🏝️'],                           a:'Los Sims'},
+    {q:'¿Javi prefiere perros o gatos?',                             opts:['Perros','Gatos','Ambos'],                                      emojis:['🐕','🐱','🐾'],                            a:'Perros'},
+    {q:'¿Javi prefiere cabritas dulces o saladas?',                  opts:['Dulces','Saladas','Le da igual'],                              emojis:['🍬','🧂','🤷'],                            a:'Dulces'},
+    {q:'¿Cuál es la bebida caliente favorita de Javi?',              opts:['Café con leche','Té','Mate'],                                  emojis:['☕','🍵','🧉'],                            a:'Café con leche'},
+    {q:'¿Cuál es el desayuno favorito de Javi?',                     opts:['Pan con palta','Cereales con leche','Omelette'],               emojis:['🥑','🥣','🍳'],                            a:'Pan con palta'},
+    {q:'¿Cuál es el aderezo favorito de Javi?',                      opts:['Ketchup','Mayonesa','Mostaza'],                                emojis:['🍅','🥚','🌻'],                            a:'Ketchup'}
+  ],
+  benja: [
+    {q:'¿Cuál es el primer nombre de Benja?',                        opts:['Juan','Benjamín','Lucas'],                                     emojis:['👦','🧔','👱'],                            a:'Juan'},
+    {q:'¿Cuándo es el cumpleaños de Benja?',                         opts:['14 de febrero','10 de diciembre','7 de marzo'],                emojis:['❤️','☀️','🌷'],                            a:'14 de febrero'},
+    {q:'¿Cuál es el signo zodiacal de Benja?',                       opts:['Acuario','Piscis','Capricornio'],                              emojis:['🏺','🐟','🐐'],                            a:'Acuario'},
+    {q:'¿A qué se dedica Benja?',                                    opts:['Diseñador','Ingeniero eléctrico','Programador'],               emojis:['🎨','⚡','💻'],                            a:'Diseñador'},
+    {q:'¿Cuántos hermanos tiene Benja?',                             opts:['1','0','2'],                                                   emojis:['👤','🚫','👫'],                            a:'1'},
+    {q:'¿Cómo se llama la mascota de Benja?',                        opts:['Sherlock','Watson','Moriarty'],                                emojis:['🔍','🩺','🎭'],                            a:'Sherlock'},
+    {q:'¿Qué colecciona Benja?',                                     opts:['Legos','Libros','Cómics'],                                    emojis:['🧱','📚','📖'],                            a:'Legos'},
+    {q:'¿Cuál es la bebida favorita de Benja?',                      opts:['Ginger ale','Coca Cola','Sprite'],                            emojis:['🫚','🥤','💚'],                            a:'Ginger ale'},
+    {q:'¿Cuáles son las películas favoritas de Benja?',              opts:['Club de la Pelea y The Batman','Bastardos sin gloria e Iron Man','Dune y Spider-Man'], emojis:['🦇','🦸','🕷️'], a:'Club de la Pelea y The Batman'},
+    {q:'¿Cuál es el cantante o banda favorita de Benja?',            opts:['Alice in Chains','Nine Inch Nails','Nirvana'],                 emojis:['⛓️','🔩','🎸'],                            a:'Alice in Chains'},
+    {q:'¿Cuál fue el primer concierto de Benja?',                    opts:['Dua Lipa','Arctic Monkeys','Iron Maiden'],                    emojis:['💃','🐒','⚔️'],                            a:'Dua Lipa'},
+    {q:'¿Cuál fue el último concierto de Benja?',                    opts:['Kendrick Lamar','Korn',"Guns N' Roses"],                      emojis:['🎤','🌽','🌹'],                            a:'Kendrick Lamar'},
+    {q:'¿Cuál es el personaje ficticio favorito de Benja?',          opts:['Kaladine','Aragorn','Jon Snow'],                              emojis:['🗡️','👑','❄️'],                            a:'Kaladine'},
+    {q:'¿Cuál es el sabor de helado favorito de Benja?',             opts:['Chocolate','Vainilla','Menta chips'],                         emojis:['🍫','🍦','🌿'],                            a:'Chocolate'},
+    {q:'¿Cuál es el cereal favorito de Benja?',                      opts:['Choco Crispis','Froot Loops','Zucaritas'],                    emojis:['🐸','🌈','🐯'],                            a:'Choco Crispis'},
+    {q:'¿Cuál es el snack favorito de Benja?',                       opts:['Gomitas','Papas fritas','Super 8'],                           emojis:['🐻','🍟','🍫'],                            a:'Gomitas'},
+    {q:'¿Qué comida no puede faltar en el plato de Benja?',          opts:['Ají','Choclo','Cebolla'],                                     emojis:['🌶️','🌽','🧅'],                            a:'Ají'},
+    {q:'¿Cuál es la comida favorita del día para Benja?',            opts:['Once','Desayuno','Almuerzo'],                                 emojis:['🫖','🌅','☀️'],                            a:'Once'},
+    {q:'¿Cuál es la comida favorita de Benja?',                      opts:['Cereales con leche','Pasta','Porotos'],                       emojis:['🥣','🍝','🫘'],                            a:'Cereales con leche'},
+    {q:'¿Cuál es el aderezo favorito de Benja?',                     opts:['Mostaza','Ketchup','Mayonesa'],                               emojis:['🌻','🍅','🥚'],                            a:'Mostaza'},
+    {q:'¿Benja prefiere cabritas dulces o saladas?',                 opts:['Dulces','Saladas','Le da igual'],                             emojis:['🍬','🧂','🤷'],                            a:'Dulces'},
+    {q:'¿Cuál es el café favorito de Benja?',                        opts:['Americano','Cappuccino','Latte'],                             emojis:['☕','🫧','🥛'],                            a:'Americano'},
+    {q:'¿Cuál es el hobby favorito de Benja?',                       opts:['Jugar videojuegos','Leer','Cocinar'],                         emojis:['🎮','📚','👨‍🍳'],                          a:'Jugar videojuegos'},
+    {q:'¿Cuál es el juego de Play favorito de Benja?',               opts:['Max Payne 3','GTA V','Call of Duty'],                         emojis:['🔫','🚗','💣'],                            a:'Max Payne 3'},
+    {q:'¿Cuál es la preferencia alimentaria de Benja?',              opts:['Pescetariano','Vegano','Vegetariano'],                        emojis:['🐟','🌱','🥦'],                            a:'Pescetariano'},
+    {q:'¿Cuál es el anime favorito de Benja?',                       opts:['One Piece','Naruto','Dragon Ball'],                           emojis:['🏴‍☠️','🍥','🐉'],                          a:'One Piece'},
+    {q:'¿Cuál es la saga favorita de Benja?',                        opts:['Avengers','Star Wars','El Señor de los Anillos'],             emojis:['🦸','⚔️','💍'],                            a:'Avengers'},
+    {q:'¿Cuál es el superhéroe favorito de Benja?',                  opts:['Batman','Spider-Man','Iron Man'],                             emojis:['🦇','🕷️','🤖'],                           a:'Batman'},
+    {q:'¿Cuál es el Pokémon favorito de Benja?',                     opts:['Blastoise','Charizard','Pikachu'],                            emojis:['💧','🔥','⚡'],                            a:'Blastoise'},
+    {q:'¿Cuál es el libro favorito de Benja?',                       opts:['El Archivo de las Tormentas','El Señor de los Anillos','Dune'], emojis:['⛈️','💍','🏜️'],                        a:'El Archivo de las Tormentas'}
+  ],
+  pareja: [
+    {q:'¿En qué año se conocieron Javi y Benja?',                    opts:['2018','2020','2016'],                                          emojis:['💑','🦠','📱'],                            a:'2018'},
+    {q:'¿Dónde se conocieron Javi y Benja?',                         opts:['Comparaonline','Encuadrado','Universidad'],                   emojis:['💻','🖼️','🎓'],                            a:'Comparaonline'},
+    {q:'¿En qué año empezaron a pololear?',                          opts:['2019','2018','2020'],                                          emojis:['💕','💝','😷'],                            a:'2019'},
+    {q:'¿Cuál es la fecha de aniversario de la pareja?',             opts:['19 de marzo','29 de abril','4 de septiembre'],                emojis:['🌷','🌸','🍂'],                            a:'19 de marzo'},
+    {q:'¿En qué país fue la propuesta de matrimonio?',               opts:['Japón','Francia','Italia'],                                   emojis:['🇯🇵','🇫🇷','🇮🇹'],                          a:'Japón'},
+    {q:'¿En qué ciudad específica fue la propuesta?',                opts:['Nara','Tokio','Kioto'],                                       emojis:['🦌','🗼','⛩️'],                            a:'Nara'},
+    {q:'¿Cuál fue el primer viaje de la pareja?',                    opts:['Los Ángeles','Orlando','Miami'],                              emojis:['🎬','🎢','🌴'],                            a:'Los Ángeles'},
+    {q:'¿Cuál es el destino de luna de miel?',                       opts:['Punta Cana','Cancún','Playa del Carmen'],                     emojis:['🏖️','🌊','🐚'],                           a:'Punta Cana'},
+    {q:'¿Cuál es el restaurante favorito de la pareja?',             opts:['Brunapoli','Osaka','La Mar'],                                 emojis:['🍕','🍱','🦞'],                            a:'Brunapoli'},
+    {q:'¿Cuál fue el último anime que vieron juntos?',               opts:['Attack on Titan','One Piece','Naruto'],                       emojis:['⚔️','🏴‍☠️','🍥'],                         a:'Attack on Titan'},
+    {q:'¿Qué raza de perro tienen en común?',                        opts:['Westy','Labrador','Shih Tzu'],                                emojis:['🤍','💛','🐶'],                            a:'Westy'},
+    {q:'¿Quién cocina en la casa?',                                  opts:['Benja','Javi','Los dos'],                                     emojis:['👨‍🍳','👩‍🍳','🍳'],                        a:'Benja'},
+    {q:'¿Quién maneja cuando salen juntos?',                         opts:['Benja','Javi','Los dos'],                                     emojis:['🚗','🚘','🚙'],                            a:'Benja'},
+    {q:'¿Quién pide el delivery?',                                   opts:['Javi','Benja','Los dos'],                                     emojis:['📱','🛵','📲'],                            a:'Javi'},
+    {q:'¿Quién va a buscar el delivery?',                            opts:['Benja','Javi','Los dos'],                                     emojis:['🚪','🏃','🤝'],                            a:'Benja'},
+    {q:'¿Cuál es el panorama favorito de la pareja?',                opts:['Salir a tomar desayuno','Ir al cine','Jugar juegos de mesa'],  emojis:['☕','🎬','🎲'],                           a:'Salir a tomar desayuno'},
+    {q:'¿Cuál es el panorama clásico de fin de semana?',             opts:['Ir al Jumbo','Ir al mall','Salir a trotar'],                   emojis:['🛒','🛍️','🏃'],                           a:'Ir al Jumbo'},
+    {q:'¿En qué año se fueron a vivir juntos?',                      opts:['2021','2020','2022'],                                          emojis:['🏠','😷','🔑'],                            a:'2021'},
+    {q:'¿Cuál es el próximo viaje de la pareja?',                    opts:['Europa','Asia','América del Sur'],                            emojis:['🗺️','🌏','🌎'],                            a:'Europa'},
+    {q:'¿Cuál fue el primer país extranjero que visitaron juntos?',  opts:['Estados Unidos','Canadá','México'],                           emojis:['🗽','🍁','🌮'],                            a:'Estados Unidos'},
+    {q:'¿Cuántos años llevan juntos?',                               opts:['7 años','5 años','6 años'],                                   emojis:['💑','🥰','💏'],                            a:'7 años'},
+    {q:'¿Cuántos años de diferencia tienen Javi y Benja?',           opts:['3 años','1 año','2 años'],                                    emojis:['🔢','1️⃣','2️⃣'],                           a:'3 años'},
+    {q:'¿Cuál es la serie icónica que vieron juntos?',               opts:['Better Call Saul','Los Soprano','House of Cards'],            emojis:['⚖️','🔫','🃏'],                            a:'Better Call Saul'},
+    {q:'¿Cuál es la película que han visto juntos más de una vez?',  opts:['Harry Potter','El Señor de los Anillos','Toy Story'],         emojis:['🪄','💍','🤠'],                            a:'Harry Potter'},
+    {q:'¿Qué tarea del hogar odia Benja?',                           opts:['Hacer la cama','Lavar los platos','Barrer'],                  emojis:['🛏️','🍽️','🧹'],                           a:'Hacer la cama'},
+    {q:'¿Qué tarea del hogar odia Javi?',                            opts:['Sacar la basura','Lavar la ropa','Limpiar el baño'],          emojis:['🗑️','👕','🚿'],                            a:'Sacar la basura'},
+    {q:'¿Cuál es la tarea del hogar favorita de Benja?',             opts:['Cocinar','Ordenar','Limpiar'],                                emojis:['👨‍🍳','📦','🧽'],                          a:'Cocinar'},
+    {q:'¿Cuál es la tarea del hogar favorita de Javi?',              opts:['Hacer la cama','Cocinar','Barrer'],                           emojis:['🛏️','🍳','🧹'],                            a:'Hacer la cama'},
+    {q:'¿Cuántos aros tienen entre los dos?',                        opts:['7','5','9'],                                                   emojis:['💎','💍','🔮'],                            a:'7'},
+    {q:'¿Cuántos tatuajes tienen entre los dos?',                    opts:['4','2','6'],                                                   emojis:['🎨','✏️','🖊️'],                            a:'4'}
+  ]
+};
+
+// ================================================================
+// ZONE URL PARAM
+// ================================================================
+const URL_ZONA = new URLSearchParams(window.location.search).get('zona');
+let pendingZone = null;
+if(URL_ZONA && ['bar','fotos','snacks'].includes(URL_ZONA)) pendingZone = URL_ZONA;
+
+// ================================================================
+// STATE
+// ================================================================
+const SK = 'matri_game_v1';
+function blank() {
+  return {
+    name:'', zones:{bar:{done:false,score:0},fotos:{done:false,score:0},snacks:{done:false,score:0}},
+    cur:null, correct:0, wrong:0, pool:[], poolIdx:0, submitted:false, partNum:null,
+    startedAt:null, usedQs:[], partNums:[]
+  };
+}
+let S = (()=>{ try{ const r=localStorage.getItem(SK); return r?{...blank(),...JSON.parse(r)}:blank(); }catch(e){return blank();} })();
+function save(){ localStorage.setItem(SK,JSON.stringify(S)); }
+function reset(){ S=blank(); save(); }
+function playAgain(){
+  const name=S.name;
+  const usedQs=S.usedQs||[];
+  const partNums=S.partNums||[];
+  S={...blank(), name, startedAt:Date.now(), usedQs, partNums};
+  save();
+  renderZones();
+  showScreen('zones');
+}
+
+// ================================================================
+// SCREENS
+// ================================================================
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('screen-'+id);
+  if(el){ el.classList.add('active'); window.scrollTo(0,0); }
+}
+function isClosed(){ return new Date()>GAME_DEADLINE; }
+function startFromHome(){
+  if(isClosed()) return showScreen('closed');
+  if(S.name){ renderZones(); showScreen('zones'); }
+  else showScreen('name');
+}
+function goToInstructions(){
+  if(isClosed()) return showScreen('closed');
+  const g=document.getElementById('inst-greeting');
+  if(g){ if(S.name){ g.textContent='¡Hola '+S.name+'!'; g.style.display='block'; } else { g.style.display='none'; } }
+  showScreen('instructions');
+}
+function goToRaffle(e){ e.preventDefault(); showScreen('raffle'); }
+
+// ================================================================
+// NAME
+// ================================================================
+function startGame(){
+  const v=document.getElementById('name-input').value.trim();
+  if(!v){ shake('name-input'); return; }
+  if(S.name&&S.name!==v) reset();
+  S.name=v; save();
+  if(pendingZone){
+    if(S.zones[pendingZone].done){ renderZones(); showScreen('zones'); toast('Ya completaste la zona '+ZONE_INFO[pendingZone].name+' ✅','ok'); }
+    else { activateZone(pendingZone); }
+  } else {
+    renderZones();
+    showScreen('zones');
+  }
+}
+function shake(id){
+  const el=document.getElementById(id);
+  el.style.borderColor='rgba(248,113,113,.5)';
+  setTimeout(()=>el.style.borderColor='',1500);
+  el.focus();
+}
+
+// ================================================================
+// ZONES
+// ================================================================
+function renderPartNums(){
+  const nums=S.partNums||[];
+  const chips=nums.map(n=>`<span class="num-chip">#${n}</span>`).join('');
+  // submitted screen (show all when >1)
+  const card=document.getElementById('part-nums-card');
+  const list=document.getElementById('part-nums-list');
+  if(card&&list){ card.style.display=nums.length>1?'block':'none'; list.innerHTML=chips; }
+  // zones screen
+  const zcard=document.getElementById('zone-nums-card');
+  const zlist=document.getElementById('zone-nums-list');
+  if(zcard&&zlist){ zcard.style.display=nums.length>0?'block':'none'; zlist.innerHTML=chips; }
+  // home screen
+  const hcard=document.getElementById('home-nums-card');
+  const hlist=document.getElementById('home-nums-list');
+  const hname=document.getElementById('home-nums-name');
+  if(hcard&&hlist){
+    hcard.style.display=(nums.length>0&&S.name)?'block':'none';
+    if(hname) hname.textContent=S.name;
+    hlist.innerHTML=chips;
+  }
+}
+
+function renderZones(){
+  document.getElementById('zones-hello').textContent='¡Hola, '+S.name+'!';
+  renderPartNums();
+  const keys=['bar','fotos','snacks'];
+  let done=0;
+  keys.forEach(z=>{
+    const d=S.zones[z].done;
+    if(d) done++;
+    document.getElementById('zc-'+z).className='zone-card'+(d?' done':'');
+    const st=document.getElementById('zst-'+z);
+    st.textContent=d?'✅ Completada':'Pendiente · Escanea el QR';
+    st.className='zone-st '+(d?'done':'pending');
+    document.getElementById('zarr-'+z).textContent=d?'✓':'→';
+    document.getElementById('pill-'+z).className='pill'+(d?' done':'');
+  });
+  document.getElementById('prog-fill').style.width=(done/3*100)+'%';
+  document.getElementById('prog-text').textContent=done+' de 3 completadas';
+  document.getElementById('all-done-cta').style.display=(done===3&&!S.submitted)?'block':'none';
+  document.getElementById('play-again-cta').style.display=(done===3&&S.submitted)?'block':'none';
+}
+
+function scanZone(z){
+  if(S.zones[z].done){ toast('Ya completaste la zona '+ZONE_INFO[z].name+' ✅','ok'); return; }
+  // Resume in-progress zone without re-scanning QR
+  if(S.cur===z && S.poolIdx>0){ showQ(); return; }
+  S.cur=z; save();
+  startQR(z);
+}
+
+// ================================================================
+// QR SCANNER
+// ================================================================
+let qrScanner=null;
+function startQR(z){
+  showScreen('qr');
+  document.getElementById('qr-hint').textContent='Escanea el QR de la zona '+ZONE_INFO[z].name;
+  if(qrScanner){ try{qrScanner.clear();}catch(e){} }
+  qrScanner=new Html5QrcodeScanner('qr-reader',{
+    fps:10, qrbox:{width:260,height:260},
+    rememberLastUsedCamera:true,
+    supportedScanTypes:[Html5QrcodeScanType.SCAN_TYPE_CAMERA,Html5QrcodeScanType.SCAN_TYPE_FILE]
+  },false);
+  qrScanner.render(txt=>onQR(txt),()=>{});
+}
+function stopQrBack(){
+  if(qrScanner){ try{qrScanner.clear();}catch(e){} qrScanner=null; }
+  renderZones(); showScreen('zones');
+}
+function onQR(txt){
+  let mapped = QR_MAP[txt.trim()];
+  // Also handle URL format: ?zona=bar / ?zona=fotos / ?zona=snacks
+  if(!mapped){
+    try {
+      const url = new URL(txt.trim());
+      const z = url.searchParams.get('zona');
+      if(z && ['bar','fotos','snacks'].includes(z)) mapped = z;
+    } catch(e){}
+  }
+  if(!mapped){ toast('QR no reconocido. Busca el QR correcto 🤔','fail'); return; }
+  if(mapped!==S.cur){ toast('Ese es el QR de '+ZONE_INFO[mapped].name+'. Busca el de '+ZONE_INFO[S.cur].name+' 😄','fail'); return; }
+  if(qrScanner){ try{qrScanner.clear();}catch(e){} qrScanner=null; }
+  activateZone(mapped);
+}
+
+// ================================================================
+// ZONE ACTIVATION
+// ================================================================
+function activateZone(z){
+  const info=ZONE_INFO[z];
+  document.getElementById('zi-emoji').textContent=info.emoji;
+  document.getElementById('zi-title').textContent='¡Zona '+info.name+'!';
+  document.getElementById('zi-msg').textContent=info.msg;
+  S.cur=z; S.correct=0; S.wrong=0; S.answerHistory=[];
+  if(!S.startedAt) S.startedAt=Date.now();
+  const used=new Set(S.usedQs||[]);
+  function freshFrom(cat){ const f=cat.map(q=>({...q})).filter(q=>!used.has(q.q)); return f.length>0?f:cat.map(q=>({...q})); }
+  // Pick 2 from each category, interleaved: javi→benja→pareja→javi→benja→pareja
+  // This gives 6 questions max, equitative, enough even if player misses several
+  const sJ=shuffle(freshFrom(Q.javi));
+  const sB=shuffle(freshFrom(Q.benja));
+  const sP=shuffle(freshFrom(Q.pareja));
+  const pool=[];
+  for(let i=0;i<2;i++){
+    if(sJ[i]) pool.push(sJ[i]);
+    if(sB[i]) pool.push(sB[i]);
+    if(sP[i]) pool.push(sP[i]);
+  }
+  S.pool=pool; // already interleaved 1J,1B,1P,1J,1B,1P
+  S.poolIdx=0; save();
+  showScreen('zone-intro');
+}
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+
+// ================================================================
+// QUESTIONS
+// ================================================================
+function startZoneQuestions(){ showQ(); }
+
+function showQ(){
+  if(S.poolIdx>=S.pool.length){ zoneCompleted(); return; }
+  const q=S.pool[S.poolIdx];
+  const z=S.cur; const info=ZONE_INFO[z];
+
+  document.getElementById('q-emoji').textContent=info.emoji;
+  document.getElementById('q-zone-name').textContent=info.name;
+
+  renderDots();
+  const qcard=document.getElementById('q-card'); if(qcard){ qcard.style.background=''; qcard.style.borderColor=''; }
+  document.getElementById('q-text').textContent=q.q;
+  const fb=document.getElementById('q-feedback'); fb.style.display='none'; fb.className='q-feedback';
+
+  const pairs=shuffle(q.opts.map((t,i)=>({t,e:(q.emojis||[])[i]||''})));
+  const grid=document.getElementById('q-opts');
+  grid.innerHTML='';
+  pairs.forEach(({t,e})=>{
+    const btn=document.createElement('button');
+    btn.className='opt'; btn.textContent=(e?e+' ':'')+t;
+    btn.onclick=()=>answer(t,q.a,btn);
+    grid.appendChild(btn);
+  });
+  document.getElementById('q-next-area').style.display='none';
+  document.getElementById('q-done-area').style.display='none';
+  showScreen('question');
+}
+
+function renderDots(){
+  const c=document.getElementById('q-dots'); c.innerHTML='';
+  const hist=S.answerHistory||[];
+  // Show answered history dots, plus remaining empty circles up to 2 correct needed
+  hist.forEach(r=>{ const d=document.createElement('div'); d.className='dot '+r; c.appendChild(d); });
+  const remaining=2-S.correct;
+  for(let i=0;i<remaining;i++){ const d=document.createElement('div'); d.className='dot'; c.appendChild(d); }
+}
+
+function answer(chosen,correct,btn){
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  const ok=chosen===correct;
+  btn.classList.add(ok?'correct':'wrong');
+  const msg=ok?pickPos():pickNeg();
+  const qcard=document.getElementById('q-card');
+  if(qcard){ qcard.style.transition='background .35s'; qcard.style.background=ok?'rgba(90,140,110,.12)':'rgba(192,99,74,.1)'; qcard.style.borderColor=ok?'rgba(90,140,110,.4)':'rgba(192,99,74,.35)'; }
+  const fb=document.getElementById('q-feedback');
+  fb.textContent=msg; fb.className='q-feedback '+(ok?'correct':'wrong'); fb.style.display='block';
+  if(!S.usedQs) S.usedQs=[];
+  if(!S.answerHistory) S.answerHistory=[];
+  const curQ=S.pool[S.poolIdx];
+  if(curQ&&!S.usedQs.includes(curQ.q)) S.usedQs.push(curQ.q);
+  if(ok){
+    S.correct++; S.poolIdx++;
+    S.answerHistory.push('correct');
+    save(); fireConfetti(); renderDots();
+    setTimeout(()=>{
+      document.getElementById('q-next-btn').textContent='Siguiente pregunta';
+      document.getElementById(S.correct>=2?'q-done-area':'q-next-area').style.display='block';
+    },700);
+  } else {
+    S.wrong++; S.poolIdx++;
+    S.answerHistory.push('wrong');
+    save(); renderDots();
+    setTimeout(()=>{
+      document.getElementById('q-next-btn').textContent='Intenta nuevamente';
+      document.getElementById('q-next-area').style.display='block';
+    },700);
+  }
+}
+function nextQuestion(){ showQ(); }
+
+// ================================================================
+// ZONE COMPLETE
+// ================================================================
+function zoneCompleted(){
+  const z=S.cur;
+  const score=S.wrong===0?2:S.correct*0.5;
+  S.zones[z].done=true; S.zones[z].score=score; save();
+
+  const info=ZONE_INFO[z];
+  document.getElementById('zc-title').textContent='¡Zona '+info.name+' completada! '+info.emoji;
+
+  const btns=document.getElementById('zc-btns'); btns.innerHTML='';
+  const done3=Object.values(S.zones).filter(z=>z.done).length===3;
+
+  if(done3){
+    const b=document.createElement('button');
+    b.className='btn btn-gold'; b.textContent='¡Sube una foto con tu cartón completo!';
+    b.onclick=showAllComplete; btns.appendChild(b);
+  } else {
+    const b=document.createElement('button');
+    b.className='btn btn-primary'; b.textContent='Ir a la siguiente zona';
+    b.onclick=()=>{ renderZones(); showScreen('zones'); }; btns.appendChild(b);
+  }
+  showScreen('zone-complete'); bigConfetti();
+}
+
+// ================================================================
+// ALL COMPLETE → SELFIE
+// ================================================================
+function showAllComplete(){
+  document.getElementById('submit-btn').disabled=true;
+  selfieB64=null;
+  document.getElementById('selfie-prev').style.display='none';
+  document.getElementById('upload-ph').style.display='block';
+  showScreen('all-complete');
+}
+function totalScore(){ return Object.values(S.zones).reduce((s,z)=>s+(z.score||0),0); }
+
+let selfieB64=null;
+function previewSelfie(ev){
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>compress(e.target.result,d=>{
+    selfieB64=d;
+    const prev=document.getElementById('selfie-prev');
+    prev.src=d; prev.style.display='block';
+    document.getElementById('upload-ph').style.display='none';
+    document.getElementById('submit-btn').disabled=false;
+  });
+  r.readAsDataURL(f);
+}
+function compress(src,cb){
+  const img=new Image();
+  img.onload=()=>{
+    const max=640; let {width:w,height:h}=img;
+    if(w>h){ if(w>max){h=Math.round(h*max/w);w=max;} }else{ if(h>max){w=Math.round(w*max/h);h=max;} }
+    const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+    cv.getContext('2d').drawImage(img,0,0,w,h);
+    cb(cv.toDataURL('image/jpeg',.60));
+  };
+  img.src=src;
+}
+
+async function submitParticipation(){
+  if(!selfieB64) return;
+  document.getElementById('submit-btn').disabled=true;
+  document.getElementById('submit-loader').style.display='flex';
+  const tiempo=S.startedAt?Math.round((Date.now()-S.startedAt)/1000):9999;
+  const payload=JSON.stringify({action:'register',nombre:S.name,puntaje:totalScore(),tiempo,foto:selfieB64});
+  let lastErr;
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const res=await fetch(GAS_API_URL,{method:'POST',body:payload});
+      const text=await res.text();
+      console.log('[submit] attempt',attempt,'status',res.status,'body',text.slice(0,300));
+      let d;
+      try{ d=JSON.parse(text); }catch(e){ throw new Error('resp_no_json:'+text.slice(0,120)); }
+      if(d.success){
+        S.submitted=true; S.partNum=d.numero;
+        if(!S.partNums) S.partNums=[];
+        S.partNums.push(d.numero);
+        save();
+        document.getElementById('part-num').textContent='#'+d.numero;
+        renderPartNums();
+        showScreen('submitted'); bigConfetti();
+        return;
+      } else { lastErr=d.error||'Error del servidor'; break; }
+    }catch(e){ lastErr=e.message; console.error('[submit] error',e); if(attempt<2) await new Promise(r=>setTimeout(r,3000)); }
+  }
+  document.getElementById('submit-loader').style.display='none';
+  document.getElementById('submit-btn').disabled=false;
+  toast('Error: '+lastErr,'fail');
+}
+
+// ================================================================
+// FEEDBACK
+// ================================================================
+const POS=[
+  '¡Mírate! Sí los conoces 🎉',
+  'Eso, amigo/a de verdad 🤝',
+  'Claramente estabas poniendo atención 👏',
+  '¡La tenías clara! ¿O la googleaste? 🔍',
+  'Javi y Benja estarían orgullosos 🥹',
+  'Confirmado: sí mereces el trago gratis 🍸',
+  'Así da gusto tener amigos 🫂',
+  'Te acabas de asegurar invitación para la próxima también 💌',
+  '¡Wujuu! 🎉',
+  'Claramente no eras invitado de relleno 😄',
+  'Te estás ganando ese timbre 🎟️',
+  'Parece que esta fue muy fácil 😏',
+  '¡Crack! Así se hace 💪',
+  'Quien hubiese pensado que sabías esto 👁️',
+  '¡Buen dato, te lo tenías guardado! 🧠',
+  '¡Tremendo! 🙌'
+];
+const NEG=[
+  'Parece que no son tan amigos… 👀',
+  '¿Seguro que deberías estar acá? 😅',
+  'Con amigos así, para qué tener enemigos 💀',
+  '¿En serio? 😬',
+  'Hasta Sherlock sabría que esa no es la respuesta 🐶',
+  'Quizás los estás confundiendo con otras personas 🤷',
+  '¡Suerte que los tragos gratis no dependen de tus respuestas! 🤔',
+  'Igual te queremos, aunque no sepas nada de ellos 😂',
+  'Esto ya se siente personal 🤔',
+  'Shuata 😟',
+  'Menos mal tienes otra oportunidad 🤭',
+  '¿En el colegio también respondías al achunte? 🎲',
+  'Si no le achuntas a la próxima, preocúpate 🙃',
+  'Pero ponle voluntad también 😅',
+  'Errar es humano, pero esto era fácil 🫣',
+  'Al menos lo intentaste 🫡'
+];
+let _posPool=[],_negPool=[];
+function pick(arr,pool){
+  if(pool.length===0){ pool.push(...shuffle([...arr])); }
+  return pool.pop();
+}
+function pickPos(){ return pick(POS,_posPool); }
+function pickNeg(){ return pick(NEG,_negPool); }
+
+let toastT;
+function toast(msg,type){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className=type+' show';
+  clearTimeout(toastT); toastT=setTimeout(()=>el.className='',2600);
+}
+
+// ================================================================
+// CONFETTI
+// ================================================================
+function fireConfetti(){
+  confetti({particleCount:80,spread:60,origin:{y:.7},colors:['#C4A265','#7A9A7E','#FFD700','#FFFFFF']});
+}
+function bigConfetti(){
+  const end=Date.now()+2200;
+  const iv=setInterval(()=>{
+    if(Date.now()>end) return clearInterval(iv);
+    confetti({particleCount:45,angle:60, spread:55,origin:{x:0}, colors:['#e8c973','#d4a0c0','#9b59b6']});
+    confetti({particleCount:45,angle:120,spread:55,origin:{x:1}, colors:['#e8c973','#d4a0c0','#9b59b6']});
+  },200);
+}
+
+// ================================================================
+// ESCAPE HELPER
+// ================================================================
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ================================================================
+// API — Google Apps Script
+// ================================================================
+async function api(action){
+  try{
+    const r=await fetch(GAS_API_URL+'?action='+action+'&t='+Date.now());
+    return await r.json();
+  }catch(e){ return null; }
+}
+
+let lbData=[];
+function renderLeaderboard(all){
+  const el=document.getElementById('lb-list');
+  const more=document.getElementById('lb-more');
+  const maxP=lbData[0].participaciones;
+  const rows=all?lbData:lbData.slice(0,10);
+  el.innerHTML=rows.map((p,i)=>{
+    const gold=p.participaciones===maxP;
+    const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    const fichas=p.participaciones===1?'1 ficha':`${p.participaciones} fichas`;
+    return `<div class="lb-row ${gold?'gold-row':''}">
+      <div class="lb-rank ${gold?'gold':''}">${rank}</div>
+      <div class="lb-name">${esc(p.nombre)}</div>
+      <div class="lb-score">${fichas}</div>
+    </div>`;
+  }).join('');
+  if(more) more.style.display=(!all&&lbData.length>10)?'block':'none';
+}
+function expandLeaderboard(){ renderLeaderboard(true); }
+
+async function loadLeaderboard(){
+  const data=await api('leaderboard');
+  const el=document.getElementById('lb-list');
+  if(!data||!data.length){ el.innerHTML='<div class="empty">Aún no hay participantes</div>'; return; }
+  lbData=data;
+  renderLeaderboard(false);
+}
+
+async function loadCount(){
+  const d=await api('count');
+  if(d) document.getElementById('count-display').textContent=d.count;
+}
+
+async function loadWinner(){
+  if(!isClosed()) return;
+  const w=await api('winner');
+  const banner=document.getElementById('winner-banner');
+  if(!banner) return;
+  if(w&&w.nombre){
+    document.getElementById('wb-name').textContent=w.nombre;
+    document.getElementById('wb-num').textContent='Número #'+w.numero;
+    const photo=document.getElementById('wb-photo');
+    if(w.foto_url){ photo.src=w.foto_url; photo.style.display='block'; }
+    banner.style.display='block';
+  }
+}
+
+async function loadGallery(){
+  const data=await api('gallery');
+  const g=document.getElementById('gallery');
+  const em=document.getElementById('gallery-empty');
+  if(!data||!data.length){ em.style.display='block'; g.innerHTML=''; return; }
+  em.style.display='none';
+  g.innerHTML=data.map(p=>`
+    <div class="gal-item">
+      <img src="${esc(p.foto)}" alt="${esc(p.nombre)}" loading="lazy" onerror="this.parentElement.style.display='none'">
+      <div class="gal-caption">
+        <div>${esc(p.nombre)}</div>
+        <div class="gal-num">#${p.numero}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ================================================================
+// RAFFLE
+// ================================================================
+function checkPw(){
+  if(document.getElementById('raffle-pw').value===RAFFLE_PASSWORD){
+    document.getElementById('raffle-gate').style.display='none';
+    document.getElementById('raffle-main').style.display='block';
+    loadRaffle(); checkSpinLock();
+  } else {
+    document.getElementById('pw-err').style.display='block';
+  }
+}
+
+let rafflers=[];
+async function loadRaffle(){
+  const d=await api('raffle'); if(!d) return;
+  rafflers=d;
+  document.getElementById('raffle-count').textContent=d.length;
+  document.getElementById('raffle-nums').innerHTML=d.map(p=>`<div class="num-chip" title="${esc(p.nombre)}">#${p.numero}</div>`).join('');
+  drawWheel(rafflers);
+}
+
+function checkSpinLock(){
+  document.getElementById('spin-btn').disabled=false;
+  document.getElementById('spin-locked').style.display='none';
+}
+
+// ── Wheel ────────────────────────────────────────────────────────
+let wheelAngle=0, wheelSpinning=false;
+const WHEEL_COLORS=['#9b59b6','#C9A96E','#b44e6e','#4a90d9','#4ade80','#f87171','#fbbf24','#a78bfa','#fb923c','#60a5fa'];
+
+function drawWheel(pts){
+  const cv=document.getElementById('raffle-canvas');
+  const ctx=cv.getContext('2d');
+  const sz=cv.width, cx=sz/2, cy=sz/2, r=sz/2-4;
+  ctx.clearRect(0,0,sz,sz);
+  if(!pts||!pts.length){
+    ctx.fillStyle='rgba(255,255,255,.1)'; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#8a7e76'; ctx.font='bold 18px Inter'; ctx.textAlign='center';
+    ctx.fillText('Sin participantes',cx,cy); return;
+  }
+  const slice=(Math.PI*2)/pts.length;
+  pts.forEach((p,i)=>{
+    const sa=wheelAngle+i*slice-Math.PI/2, ea=sa+slice;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,sa,ea); ctx.closePath();
+    ctx.fillStyle=WHEEL_COLORS[i%WHEEL_COLORS.length]; ctx.fill();
+    ctx.strokeStyle='rgba(0,0,0,.18)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(sa+slice/2);
+    ctx.textAlign='right'; ctx.fillStyle='white';
+    ctx.font='bold '+Math.min(14,120/pts.length)+'px Inter';
+    ctx.fillText('#'+p.numero, r-10, 5); ctx.restore();
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,18,0,Math.PI*2);
+  ctx.fillStyle='#1a1625'; ctx.fill();
+}
+
+function spinWheel(){
+  if(wheelSpinning||!rafflers.length) return;
+  wheelSpinning=true;
+  document.getElementById('spin-btn').disabled=true;
+  document.getElementById('winner-area').style.display='none';
+  const n=rafflers.length;
+  const winIdx=Math.floor(Math.random()*n);
+  const winner=rafflers[winIdx];
+  const slice=(Math.PI*2)/n;
+  const extraSpins=Math.PI*2*(5+Math.floor(Math.random()*4));
+  const target=extraSpins+(-(winIdx*slice)+slice/2);
+  const start=wheelAngle, duration=5500, t0=performance.now();
+  function easeOut(t){ return 1-Math.pow(1-t,4); }
+  function frame(now){
+    const p=Math.min((now-t0)/duration,1);
+    wheelAngle=start+target*easeOut(p);
+    drawWheel(rafflers);
+    // pointer triangle
+    const cv=document.getElementById('raffle-canvas');
+    const ctx=cv.getContext('2d'), cx=cv.width/2;
+    ctx.fillStyle='#e8c973'; ctx.beginPath();
+    ctx.moveTo(cx,6); ctx.lineTo(cx-10,0); ctx.lineTo(cx+10,0); ctx.closePath(); ctx.fill();
+    if(p<1){ requestAnimationFrame(frame); }
+    else { wheelSpinning=false; document.getElementById('spin-btn').disabled=false; showWinner(winner); bigConfetti(); }
+  }
+  requestAnimationFrame(frame);
+}
+
+function showWinner(w){
+  document.getElementById('winner-num').textContent='#'+w.numero;
+  document.getElementById('winner-name').textContent=w.nombre;
+  document.getElementById('winner-area').style.display='block';
+  const sb=document.getElementById('save-winner-btn');
+  if(sb){ sb.style.display='block'; sb.onclick=()=>saveWinner(w.numero); }
+}
+async function saveWinner(numero){
+  const sb=document.getElementById('save-winner-btn');
+  if(sb){ sb.disabled=true; sb.textContent='Guardando...'; }
+  const res=await fetch(GAS_API_URL,{method:'POST',body:JSON.stringify({action:'save_winner',numero})});
+  const d=await res.json();
+  if(d.success){ toast('¡Ganador guardado! Aparecerá en el inicio 🎊','ok'); if(sb) sb.textContent='✅ Guardado'; }
+  else { toast('Error: '+d.error,'fail'); if(sb){ sb.disabled=false; sb.textContent='Guardar ganador'; } }
+}
+
+// ================================================================
+// POLLING
+// ================================================================
+function poll(){
+  loadLeaderboard(); loadCount(); loadGallery(); loadWinner();
+  setInterval(()=>{
+    if(document.getElementById('screen-home').classList.contains('active')){
+      loadLeaderboard(); loadCount(); loadGallery();
+    }
+  },15000);
+}
+
+// ================================================================
+// INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded',()=>{
+  // Migrate legacy partNum → partNums array
+  if(S.partNum && (!S.partNums || S.partNums.length===0)){
+    S.partNums=[S.partNum]; save();
+  }
+  if(S.name) document.getElementById('name-input').value=S.name;
+  if(S.submitted&&S.partNum) document.getElementById('part-num').textContent='#'+S.partNum;
+  renderPartNums();
+  if(isClosed()){ const pb=document.getElementById('home-play-btn'); if(pb){ pb.disabled=true; pb.textContent='El juego ha cerrado 🔒'; pb.style.opacity='.5'; } }
+  poll();
+
+  // Auto-activate zone from URL param
+  if(pendingZone && !isClosed()){
+    if(S.name){
+      // returning player — go straight to zone or zones screen
+      if(S.zones[pendingZone].done){ renderZones(); showScreen('zones'); toast('Ya completaste la zona '+ZONE_INFO[pendingZone].name+' ✅','ok'); }
+      else { activateZone(pendingZone); }
+    } else {
+      // new player — go to name entry (startGame will handle zone activation)
+      showScreen('name');
+    }
+  }
+});
+</script>
+</body>
+</html>

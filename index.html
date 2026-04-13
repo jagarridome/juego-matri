@@ -327,10 +327,10 @@
       <div class="card mb-4">
         <div class="section-title" style="margin-bottom:14px">¿Cómo jugar?</div>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
-          <div class="inst-step"><span class="inst-step-emoji">🏠</span><span>Hay <strong>3 zonas</strong> en el evento</span></div>
-          <div class="inst-step"><span class="inst-step-emoji">📱</span><span>En cada zona hay un <strong>código QR</strong></span></div>
-          <div class="inst-step"><span class="inst-step-emoji">🔓</span><span>Escanea el QR para <strong>activar esa zona</strong></span></div>
-          <div class="inst-step"><span class="inst-step-emoji">✅</span><span>Responde <strong>2 preguntas</strong> y timbra tu cartón</span></div>
+          <div class="inst-step"><span class="inst-step-emoji">🏠</span><span>Hay <strong>3 estaciones</strong> diferentes</span></div>
+          <div class="inst-step"><span class="inst-step-emoji">📱</span><span>En cada una hay un <strong>código QR</strong></span></div>
+          <div class="inst-step"><span class="inst-step-emoji">🔓</span><span>Escanéalo y <strong>activa las preguntas</strong></span></div>
+          <div class="inst-step"><span class="inst-step-emoji">✅</span><span>Responde <strong>2 correctamente</strong> y timbra el cartón</span></div>
           <div class="inst-step"><span class="inst-step-emoji">🏆</span><span>Completa las <strong>3 zonas</strong> y sube una foto para participar</span></div>
           <div class="inst-step"><span class="inst-step-emoji">🔄</span><span><strong>Repite</strong> y suma oportunidades de ganar</span></div>
         </div>
@@ -358,7 +358,7 @@
           <button onclick="playAgain()" style="background:none;border:none;color:#b08a6e;font-family:'Raleway',sans-serif;font-size:.78rem;cursor:pointer;margin-top:10px;text-decoration:underline;text-underline-offset:3px">Jugar de nuevo</button>
         </div>
         <div class="mt-4">
-          <a href="#" onclick="goToRaffle(event)" style="color:#9A8F85;font-size:.75rem;text-decoration:none">Acceso sorteo 🎰</a>
+          <a href="#" onclick="goToRaffle(event)" style="color:#9A8F85;font-size:.75rem;text-decoration:none">Acceso privado 🎰</a>
         </div>
       </div>
     </div><!-- /container -->
@@ -378,11 +378,11 @@
       </div>
 
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:32px">
-        <div class="inst-step"><span class="inst-step-emoji">🏠</span><span>Hay <strong>3 zonas</strong> en el evento</span></div>
-        <div class="inst-step"><span class="inst-step-emoji">📱</span><span>En cada zona hay un <strong>código QR</strong></span></div>
-        <div class="inst-step"><span class="inst-step-emoji">🔓</span><span>Escanea el QR para <strong>activar esa zona</strong></span></div>
-        <div class="inst-step"><span class="inst-step-emoji">✅</span><span>Responde <strong>2 preguntas correctas</strong> y timbra tu cartón</span></div>
-        <div class="inst-step"><span class="inst-step-emoji">🏆</span><span>Completa tu cartón y <strong>sube una foto</strong> para participar</span></div>
+        <div class="inst-step"><span class="inst-step-emoji">🏠</span><span>Hay <strong>3 estaciones</strong> diferentes</span></div>
+        <div class="inst-step"><span class="inst-step-emoji">📱</span><span>En cada una hay un <strong>código QR</strong></span></div>
+        <div class="inst-step"><span class="inst-step-emoji">🔓</span><span>Escanéalo y <strong>activa las preguntas</strong></span></div>
+        <div class="inst-step"><span class="inst-step-emoji">✅</span><span>Responde <strong>2 correctamente</strong> y timbra el cartón</span></div>
+        <div class="inst-step"><span class="inst-step-emoji">🏆</span><span>Completa las <strong>3 zonas</strong> y sube una foto para participar</span></div>
         <div class="inst-step"><span class="inst-step-emoji">🔄</span><span><strong>Repite</strong> y suma oportunidades de ganar</span></div>
       </div>
 
@@ -413,7 +413,7 @@
   <div class="screen" id="screen-zones">
     <div class="container">
       <div class="tc mt-6 mb-4">
-        <div class="hearts">♥ &nbsp; ♥ &nbsp; ♥</div>
+        <div class="hearts">♥&#xFE0E; &nbsp; ♥&#xFE0E; &nbsp; ♥&#xFE0E;</div>
         <div class="title title-sm mt-2" id="zones-hello"></div>
         <div class="muted mt-2">Completa las 3 zonas escaneando el QR de cada una.<br>Puedes hacerlo en el orden que prefieras.</div>
       </div>
@@ -455,7 +455,7 @@
       <div class="zone-card" id="zc-snacks" onclick="scanZone('snacks')">
         <span class="zone-emoji">🧀</span>
         <div class="zone-info">
-          <div class="zone-name">Mesa de Snacks</div>
+          <div class="zone-name">Snacks</div>
           <div class="zone-st pending" id="zst-snacks">Pendiente · Escanea el QR</div>
         </div>
         <span class="zone-arrow" id="zarr-snacks">→</span>
@@ -486,7 +486,12 @@
         <div class="muted mt-2" id="qr-hint">Apunta la cámara al código QR de la zona</div>
       </div>
       <div id="qr-reader"></div>
-      <div class="muted tc mt-4" style="font-size:.78rem">También puedes subir una foto del QR desde tu galería</div>
+      <div class="tc mt-4">
+        <label style="color:#9A8F85;font-size:.78rem;cursor:pointer;text-decoration:underline;text-underline-offset:3px">
+          También puedes subir una foto del QR
+          <input type="file" accept="image/*" id="qr-file-input" style="display:none" onchange="handleQrFile(this)">
+        </label>
+      </div>
     </div>
   </div>
 
@@ -696,7 +701,7 @@ const QR_MAP = {
 const ZONE_INFO = {
   bar:    { name:'Bar',             emoji:'🍹', msg:'Aprovecha de pedir algo rico mientras juegas 🍸',           label:'label-bar'    },
   fotos:  { name:'Fotos',           emoji:'📸', msg:'Aprovecha de sacarte una foto para el recuerdo 🤳',         label:'label-fotos'  },
-  snacks: { name:'Mesa de Snacks',  emoji:'🧀', msg:'Aprovecha de picar algo mientras juegas 🫒',               label:'label-snacks' }
+  snacks: { name:'Snacks',          emoji:'🧀', msg:'Aprovecha de picar algo mientras juegas 🫒',               label:'label-snacks' }
 };
 
 // ================================================================
@@ -935,35 +940,55 @@ function scanZone(z){
 // QR SCANNER
 // ================================================================
 let qrScanner=null;
+async function stopQR(){
+  if(qrScanner){
+    try{ if(qrScanner.isScanning) await qrScanner.stop(); }catch(e){}
+    try{ qrScanner.clear(); }catch(e){}
+    qrScanner=null;
+  }
+}
 function startQR(z){
   showScreen('qr');
-  document.getElementById('qr-hint').textContent='Escanea el QR de la zona '+ZONE_INFO[z].name;
-  if(qrScanner){ try{qrScanner.clear();}catch(e){} }
-  qrScanner=new Html5QrcodeScanner('qr-reader',{
-    fps:10, qrbox:{width:260,height:260},
-    rememberLastUsedCamera:true,
-    supportedScanTypes:[Html5QrcodeScanType.SCAN_TYPE_CAMERA,Html5QrcodeScanType.SCAN_TYPE_FILE]
-  },false);
-  qrScanner.render(txt=>onQR(txt),()=>{});
+  document.getElementById('qr-hint').textContent='Apunta la cámara al QR de la zona '+ZONE_INFO[z].name;
+  const fileInput=document.getElementById('qr-file-input');
+  if(fileInput) fileInput.value='';
+  stopQR().then(()=>{
+    document.getElementById('qr-reader').innerHTML='';
+    qrScanner=new Html5Qrcode('qr-reader');
+    qrScanner.start(
+      {facingMode:'environment'},
+      {fps:10,qrbox:{width:260,height:260}},
+      txt=>onQR(txt),
+      ()=>{}
+    ).catch(()=>toast('Permite el acceso a la cámara e intenta de nuevo 📷','fail'));
+  });
 }
 function stopQrBack(){
-  if(qrScanner){ try{qrScanner.clear();}catch(e){} qrScanner=null; }
-  renderZones(); showScreen('zones');
+  stopQR().then(()=>{ renderZones(); showScreen('zones'); });
 }
 function onQR(txt){
-  let mapped = QR_MAP[txt.trim()];
+  let mapped=QR_MAP[txt.trim()];
   // Also handle URL format: ?zona=bar / ?zona=fotos / ?zona=snacks
   if(!mapped){
-    try {
-      const url = new URL(txt.trim());
-      const z = url.searchParams.get('zona');
-      if(z && ['bar','fotos','snacks'].includes(z)) mapped = z;
-    } catch(e){}
+    try{
+      const url=new URL(txt.trim());
+      const z=url.searchParams.get('zona');
+      if(z&&['bar','fotos','snacks'].includes(z)) mapped=z;
+    }catch(e){}
   }
   if(!mapped){ toast('QR no reconocido. Busca el QR correcto 🤔','fail'); return; }
   if(mapped!==S.cur){ toast('Ese es el QR de '+ZONE_INFO[mapped].name+'. Busca el de '+ZONE_INFO[S.cur].name+' 😄','fail'); return; }
-  if(qrScanner){ try{qrScanner.clear();}catch(e){} qrScanner=null; }
-  activateZone(mapped);
+  stopQR().then(()=>activateZone(mapped));
+}
+function handleQrFile(input){
+  const file=input.files[0]; if(!file) return;
+  stopQR().then(()=>{
+    document.getElementById('qr-reader').innerHTML='';
+    const tmp=new Html5Qrcode('qr-reader');
+    tmp.scanFile(file,true)
+      .then(txt=>{ try{tmp.clear();}catch(e){} onQR(txt); })
+      .catch(()=>{ try{tmp.clear();}catch(e){} toast('No se pudo leer el QR de la imagen 🤔','fail'); });
+  });
 }
 
 // ================================================================

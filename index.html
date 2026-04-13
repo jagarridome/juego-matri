@@ -284,6 +284,24 @@
     #qr-reader { width:100%; border-radius:16px; overflow:hidden; }
     #qr-reader video { border-radius:12px; }
     #qr-reader img { border-radius:8px; }
+
+    /* ===== SCROLL INDICATOR ===== */
+    .scroll-indicator {
+      position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+      width:20px; height:32px;
+      border:2px solid rgba(196,168,130,.45); border-radius:50px;
+      display:flex; justify-content:center; padding-top:5px;
+      z-index:3;
+    }
+    .scroll-dot {
+      width:4px; height:8px;
+      background:rgba(196,168,130,.65); border-radius:50px;
+      animation:scrollBounce 2s ease-in-out infinite;
+    }
+    @keyframes scrollBounce {
+      0%,100% { transform:translateY(0); }
+      50%      { transform:translateY(8px); }
+    }
   </style>
 </head>
 <body>
@@ -304,6 +322,9 @@
         <div class="title-eyebrow">¿Cuánto conoces a?</div>
         <span class="script-name">Javi &amp; Benja</span>
         <div class="cherry-divider"></div>
+      </div>
+      <div class="scroll-indicator">
+        <div class="scroll-dot"></div>
       </div>
     </div>
     <div class="container" style="padding:0 16px 48px">
@@ -470,7 +491,11 @@
       <div id="all-done-cta" style="display:none" class="mt-4">
         <div class="divider"></div>
         <div class="tc mb-4" style="color:#2e8a50;font-size:1.05rem">🎉 ¡Completaste las 3 zonas!</div>
-        <button class="btn btn-gold" onclick="showAllComplete()">Sube una foto con tu cartón completo</button>
+        <button class="btn btn-gold" onclick="showAllComplete(false)">Sube una foto con tu cartón completo</button>
+        <div id="no-card-cta" style="display:none;margin-top:12px">
+          <div style="text-align:center;color:#9A8F85;font-size:.78rem;margin-bottom:8px">¿Se te acabaron los cartones?</div>
+          <button class="btn btn-outline" onclick="showAllComplete(true)">Sigue sumando chances igual 🎯</button>
+        </div>
       </div>
       <div id="play-again-cta" style="display:none" class="mt-4">
         <div class="divider"></div>
@@ -566,12 +591,12 @@
       <div class="tc mt-6 mb-4">
         <span style="font-size:3rem;display:block">🎊</span>
         <div class="title title-sm mt-3">¡Completaste las 3 zonas!</div>
-        <div class="muted mt-2">Solo falta subir una foto mostrando tu cartón completo</div>
+        <div class="muted mt-2" id="ac-subtitle">Solo falta subir una foto mostrando tu cartón completo</div>
       </div>
 
       <div class="card mb-4">
-        <div class="section-title">📸 Sube tu foto</div>
-        <div class="muted mb-4" style="font-size:.83rem">Muestra tu cartón con los <strong>3 timbres completos</strong> — esto valida tu participación</div>
+        <div class="section-title" id="ac-photo-title">📸 Sube tu foto</div>
+        <div class="muted mb-4" style="font-size:.83rem" id="ac-photo-hint">Muestra tu cartón con los <strong>3 timbres completos</strong> — esto valida tu participación</div>
         <label class="upload-area" id="upload-area">
           <input type="file" accept="image/*" id="selfie-input" onchange="previewSelfie(event)">
           <div id="upload-ph">
@@ -932,6 +957,8 @@ function renderZones(){
   document.getElementById('prog-text').textContent=done+' de 3 completadas';
   document.getElementById('all-done-cta').style.display=(done===3&&!S.submitted)?'block':'none';
   document.getElementById('play-again-cta').style.display=(done===3&&S.submitted)?'block':'none';
+  const ncCta=document.getElementById('no-card-cta');
+  if(ncCta) ncCta.style.display=(done===3&&!S.submitted&&(S.partNums||[]).length>=2)?'block':'none';
 }
 
 function scanZone(z){
@@ -1116,8 +1143,17 @@ function zoneCompleted(){
 
   if(done3){
     const b=document.createElement('button');
-    b.className='btn btn-gold'; b.textContent='¡Sube una foto con tu cartón completo!';
-    b.onclick=showAllComplete; btns.appendChild(b);
+    b.className='btn btn-gold'; b.textContent='Sube una foto con tu cartón completo';
+    b.onclick=()=>showAllComplete(false); btns.appendChild(b);
+    if((S.partNums||[]).length>=2){
+      const sep=document.createElement('div');
+      sep.style.cssText='text-align:center;color:#9A8F85;font-size:.78rem;margin-top:12px;margin-bottom:4px';
+      sep.textContent='¿Se te acabaron los cartones?'; btns.appendChild(sep);
+      const b2=document.createElement('button');
+      b2.className='btn btn-outline'; b2.style.marginTop='4px';
+      b2.textContent='Sigue sumando chances igual 🎯';
+      b2.onclick=()=>showAllComplete(true); btns.appendChild(b2);
+    }
   } else {
     const b=document.createElement('button');
     b.className='btn btn-primary'; b.textContent='Ir a la siguiente zona';
@@ -1129,7 +1165,21 @@ function zoneCompleted(){
 // ================================================================
 // ALL COMPLETE → SELFIE
 // ================================================================
-function showAllComplete(){
+function showAllComplete(noCard){
+  S.noCard=!!noCard; save();
+  // Adapt copy based on mode
+  const subtitle=document.getElementById('ac-subtitle');
+  const hint=document.getElementById('ac-photo-hint');
+  const title=document.getElementById('ac-photo-title');
+  if(noCard){
+    if(subtitle) subtitle.textContent='Solo falta una selfie para seguir participando 🤳';
+    if(title)    title.textContent='🤳 Tu selfie';
+    if(hint)     hint.innerHTML='Tómate una <strong>selfie</strong> desde donde estés — confirma que estás en la fiesta y seguís sumando chances';
+  } else {
+    if(subtitle) subtitle.textContent='Solo falta subir una foto mostrando tu cartón completo';
+    if(title)    title.textContent='📸 Sube tu foto';
+    if(hint)     hint.innerHTML='Muestra tu cartón con los <strong>3 timbres completos</strong> — esto valida tu participación';
+  }
   document.getElementById('submit-btn').disabled=true;
   selfieB64=null;
   document.getElementById('selfie-prev').style.display='none';

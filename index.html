@@ -596,8 +596,8 @@
     <div class="container tc">
       <span style="font-size:4.5rem;display:block;animation:bounceY .7s ease-in-out infinite alternate">🎉</span>
       <div class="title title-sm mt-4" id="zc-title"></div>
-      <div class="card card-green mt-4 mb-4">
-        <div style="color:#2e8a50;font-size:.95rem">¡Ya puedes timbrar tu cartón! 🎟️</div>
+      <div class="card card-green mt-4 mb-4" id="zc-stamp-card">
+        <div style="color:#2e8a50;font-size:.95rem" id="zc-stamp-msg">¡Ya puedes timbrar tu cartón! 🎟️</div>
       </div>
       <div id="zc-btns" class="flex-col"></div>
     </div>
@@ -1192,6 +1192,9 @@ function zoneCompleted(){
     b.className='btn btn-primary'; b.textContent='Ir a la siguiente zona';
     b.onclick=()=>{ renderZones(); showScreen('zones'); }; btns.appendChild(b);
   }
+  // Ocultar "timbra tu cartón" si el usuario juega sin cartón
+  const stampCard=document.getElementById('zc-stamp-card');
+  if(stampCard) stampCard.style.display=(S.partNums||[]).length>=2?'none':'block';
   showScreen('zone-complete'); bigConfetti();
 }
 

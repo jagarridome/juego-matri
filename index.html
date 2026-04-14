@@ -556,7 +556,7 @@
       <div class="card mt-4 mb-4">
         <p id="zi-msg" style="color:#4a3824;line-height:1.65;font-size:.97rem"></p>
       </div>
-      <div class="card card-purple mb-4">
+      <div class="card card-purple mb-4" id="zi-timbre-card">
         <div style="color:#c49bea;font-size:.88rem">Necesitas <strong>2 respuestas correctas</strong> para completar esta zona y obtener tu timbre 🎟️</div>
       </div>
       <button class="btn btn-primary" onclick="startZoneQuestions()">¡Vamos!</button>
@@ -599,7 +599,7 @@
       <div class="card card-green mt-4 mb-4" id="zc-stamp-card">
         <div style="color:#2e8a50;font-size:.95rem" id="zc-stamp-msg">¡Ya puedes timbrar tu cartón! 🎟️</div>
       </div>
-      <div id="zc-btns" class="flex-col"></div>
+      <div id="zc-btns" class="flex-col mt-4"></div>
     </div>
   </div>
 
@@ -1102,6 +1102,8 @@ function activateZone(z){
   }
   S.pool=pool; // already interleaved 1J,1B,1P,1J,1B,1P
   S.poolIdx=0; save();
+  const timbreCard=document.getElementById('zi-timbre-card');
+  if(timbreCard) timbreCard.style.display=(S.partNums||[]).length>=2?'none':'block';
   showScreen('zone-intro');
 }
 function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
@@ -1316,7 +1318,7 @@ const POS=[
   'Te acabas de asegurar invitación para la próxima también 💌',
   '¡Wujuu! 🎉',
   'Claramente no eras invitado de relleno 😄',
-  'Te estás ganando ese timbre 🎟️',
+  '¡Ya vas muy bien! 🎯',
   'Parece que esta fue muy fácil 😏',
   '¡Crack! Así se hace 💪',
   'Quien hubiese pensado que sabías esto 👁️',

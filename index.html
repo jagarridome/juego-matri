@@ -727,6 +727,17 @@
           <div id="winner-name" style="color:#d4a0c0;font-size:1.05rem;margin-top:8px"></div>
           <button id="save-winner-btn" class="btn btn-gold mt-4" style="display:none">Guardar ganador</button>
         </div>
+
+        <!-- Reset -->
+        <div class="card mt-6" style="border-color:rgba(248,113,113,.25);background:rgba(248,113,113,.04)">
+          <div style="font-size:.88rem;font-weight:700;color:#c0634a;margin-bottom:4px">🗑️ Resetear mi juego</div>
+          <div style="font-size:.76rem;color:#9A8F85;line-height:1.4;margin-bottom:12px">Borra el progreso guardado en <em>este</em> dispositivo (nombre, zonas, números). No afecta a otros invitados.</div>
+          <div id="reset-confirm" style="display:none;margin-bottom:10px;font-size:.82rem;color:#c0634a;font-weight:600;text-align:center">¿Seguro? Esto no se puede deshacer.</div>
+          <div style="display:flex;gap:8px">
+            <button id="reset-btn" class="btn" style="background:rgba(248,113,113,.12);color:#c0634a;border:1px solid rgba(248,113,113,.35);flex:1;font-size:.88rem" onclick="resetStep()">Resetear</button>
+            <button id="reset-cancel-btn" class="btn" style="display:none;background:rgba(156,163,175,.12);color:#9A8F85;border:1px solid rgba(156,163,175,.3);flex:1;font-size:.88rem" onclick="resetCancel()">Cancelar</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1453,6 +1464,30 @@ async function loadGallery(){
 
 // ================================================================
 // RAFFLE
+// ================================================================
+let resetReady=false;
+function resetStep(){
+  if(!resetReady){
+    resetReady=true;
+    document.getElementById('reset-confirm').style.display='block';
+    document.getElementById('reset-btn').textContent='Sí, borrar';
+    document.getElementById('reset-cancel-btn').style.display='block';
+  } else {
+    localStorage.removeItem('matri_game_v1');
+    S=blank(); save();
+    resetReady=false;
+    document.getElementById('reset-confirm').style.display='none';
+    document.getElementById('reset-btn').textContent='Resetear';
+    document.getElementById('reset-cancel-btn').style.display='none';
+    toast('Juego reseteado en este dispositivo ✅','ok');
+  }
+}
+function resetCancel(){
+  resetReady=false;
+  document.getElementById('reset-confirm').style.display='none';
+  document.getElementById('reset-btn').textContent='Resetear';
+  document.getElementById('reset-cancel-btn').style.display='none';
+}
 // ================================================================
 function checkPw(){
   if(document.getElementById('raffle-pw').value===RAFFLE_PASSWORD){

@@ -343,7 +343,7 @@
           <span id="home-nums-name" style="font-size:.78rem;color:#b08a6e"></span>
         </div>
         <div id="home-nums-list" style="display:flex;flex-wrap:wrap;gap:6px"></div>
-        <div id="home-nocard-hint" style="display:none;margin-top:10px;font-size:.76rem;color:#9A8F85;line-height:1.4">🎯 Ya usaste tus cartones — puedes seguir jugando con selfie</div>
+        <div id="home-nocard-hint" style="display:none;margin-top:10px;font-size:.76rem;color:#9A8F85;line-height:1.4">🎯 Ya usaste tus cartones — pero puedes seguir jugando</div>
         <button onclick="startFromHome()" style="background:none;border:none;color:#b08a6e;font-family:'Raleway',sans-serif;font-size:.78rem;cursor:pointer;margin-top:10px;text-decoration:underline;text-underline-offset:3px">Jugar de nuevo →</button>
       </div>
 
@@ -460,7 +460,7 @@
       <!-- Banner modo selfie: visible cuando partNums >= 2 -->
       <div id="nocard-banner" style="display:none;background:rgba(201,169,110,.10);border:1px solid rgba(185,155,90,.28);border-radius:14px;padding:12px 16px;margin-bottom:16px;text-align:center">
         <div style="font-size:.88rem;font-weight:700;color:#7a6530;margin-bottom:3px">🎯 ¿Sin cartón? ¡Puedes seguir jugando!</div>
-        <div style="font-size:.76rem;color:#9A8F85;line-height:1.4">Completa las 3 zonas y sube una selfie para sumar más números al sorteo</div>
+        <div style="font-size:.76rem;color:#9A8F85;line-height:1.4">Si tanto quieres ganar el premio, puedes seguir mandando respuestas y sumar números al sorteo.</div>
       </div>
 
       <div class="card mb-4">
@@ -957,6 +957,9 @@ function renderPartNums(){
     hlist.innerHTML=chips;
     const hhint=document.getElementById('home-nocard-hint');
     if(hhint) hhint.style.display=nums.length>=2?'block':'none';
+    // Ocultar botón "¡Jugar!" si ya hay números — el de "Jugar de nuevo" en esta card hace su función
+    const playBtn=document.getElementById('home-play-btn');
+    if(playBtn) playBtn.style.display=(nums.length>0&&S.name)?'none':'block';
   }
 }
 

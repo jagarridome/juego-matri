@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Zonas — Javi & Benja</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/brittany-signature" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: #FAF8F3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 24px;
+      gap: 48px;
+    }
+    h1 {
+      font-family: 'Brittany Signature', cursive;
+      font-size: 3rem;
+      color: #212123;
+      font-weight: normal;
+      text-align: center;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      border: 1px solid rgba(196,168,130,.25);
+      border-radius: 24px;
+      padding: 32px 28px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(196,168,130,.15);
+      width: 280px;
+    }
+    .emoji { font-size: 3rem; margin-bottom: 12px; display: block; }
+    .zone-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #4a3824;
+      margin-bottom: 20px;
+    }
+    .qr img {
+      width: 200px;
+      height: 200px;
+      border-radius: 12px;
+    }
+    .url {
+      margin-top: 14px;
+      font-size: .72rem;
+      color: #9A8F85;
+      word-break: break-all;
+    }
+    @media print {
+      body { background: white; padding: 20px; }
+      .card { break-inside: avoid; box-shadow: none; border: 1.5px solid #C4A882; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Javi & Benja</h1>
+
+  <div class="grid">
+    <div class="card">
+      <span class="emoji">🎮</span>
+      <div class="zone-name">Página Principal</div>
+      <div class="qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&color=4a3824&data=https%3A%2F%2Fjavi-benja.vercel.app%2F" alt="QR Principal">
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="emoji">🍹</span>
+      <div class="zone-name">Bar</div>
+      <div class="qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&color=4a3824&data=https%3A%2F%2Fjavi-benja.vercel.app%2F%3Fzona%3Dbar" alt="QR Bar">
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="emoji">📸</span>
+      <div class="zone-name">Fotos</div>
+      <div class="qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&color=4a3824&data=https%3A%2F%2Fjavi-benja.vercel.app%2F%3Fzona%3Dfotos" alt="QR Fotos">
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="emoji">🧀</span>
+      <div class="zone-name">Snacks</div>
+      <div class="qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&color=4a3824&data=https%3A%2F%2Fjavi-benja.vercel.app%2F%3Fzona%3Dsnacks" alt="QR Snacks">
+      </div>
+    </div>
+  </div>
+
+  <p style="color:#9A8F85;font-size:.8rem;margin-top:8px">Ctrl+P / Cmd+P para imprimir</p>
+</body>
+</html>

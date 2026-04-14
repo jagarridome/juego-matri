@@ -620,7 +620,7 @@
         <label class="upload-area" id="upload-area">
           <input type="file" accept="image/*" id="selfie-input" onchange="previewSelfie(event)">
           <div id="upload-ph">
-            <div style="font-size:2.5rem;margin-bottom:8px">🤳</div>
+            <div style="font-size:2.5rem;margin-bottom:8px">📷</div>
             <div style="font-weight:600;margin-bottom:4px">Toca para tomar o subir foto</div>
           </div>
           <img id="selfie-prev" class="upload-preview" style="display:none" alt="preview">
@@ -1232,9 +1232,9 @@ function showAllComplete(noCard){
   const hint=document.getElementById('ac-photo-hint');
   const title=document.getElementById('ac-photo-title');
   if(noCard){
-    if(subtitle) subtitle.textContent='Solo falta una selfie para seguir participando 🤳';
+    if(subtitle) subtitle.textContent='Solo falta una foto para seguir participando 📸';
     if(title)    title.textContent='🤳 Tu selfie';
-    if(hint)     hint.innerHTML='Tómate una <strong>selfie</strong> desde donde estés — confirma que estás en la fiesta y seguís sumando chances';
+    if(hint)     hint.innerHTML='Tómate una foto desde donde estés — confirma que sigues acá y suma chances de ganar.';
   } else {
     if(subtitle) subtitle.textContent='Solo falta subir una foto mostrando tu cartón completo';
     if(title)    title.textContent='📸 Sube tu foto';

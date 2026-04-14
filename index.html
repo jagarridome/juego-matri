@@ -895,6 +895,8 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById('screen-'+id);
   if(el){ el.classList.add('active'); window.scrollTo(0,0); }
+  // Liberar cámara solo al salir al inicio
+  if(id==='home') stopQR();
 }
 function isClosed(){ return new Date()>GAME_DEADLINE; }
 function startFromHome(){
@@ -1004,11 +1006,21 @@ function scanZone(z){
 // QR SCANNER
 // ================================================================
 let qrScanner=null;
+let qrRunning=false; // true mientras la cámara esté abierta
+
 async function stopQR(){
+  // Liberación total — solo al volver al inicio
+  qrRunning=false;
   if(qrScanner){
     try{ if(qrScanner.isScanning) await qrScanner.stop(); }catch(e){}
     try{ qrScanner.clear(); }catch(e){}
     qrScanner=null;
+  }
+}
+function pauseQR(){
+  // Pausa el decodificador pero mantiene el stream vivo → no pide permiso de nuevo
+  if(qrScanner&&qrRunning){
+    try{ qrScanner.pause(false); }catch(e){}
   }
 }
 function startQR(z){
@@ -1016,19 +1028,29 @@ function startQR(z){
   document.getElementById('qr-hint').textContent='Apunta la cámara al QR de la zona '+ZONE_INFO[z].name;
   const fileInput=document.getElementById('qr-file-input');
   if(fileInput) fileInput.value='';
-  stopQR().then(()=>{
-    document.getElementById('qr-reader').innerHTML='';
-    qrScanner=new Html5Qrcode('qr-reader');
-    qrScanner.start(
-      {facingMode:'environment'},
-      {fps:10,qrbox:{width:260,height:260}},
-      txt=>onQR(txt),
-      ()=>{}
-    ).catch(()=>toast('Permite el acceso a la cámara e intenta de nuevo 📷','fail'));
-  });
+
+  if(qrScanner&&qrRunning){
+    // Cámara ya abierta de una zona anterior — solo retomar
+    try{ qrScanner.resume(); }catch(e){}
+    return;
+  }
+  // Primera vez o después de stop total
+  if(qrScanner){ try{ qrScanner.clear(); }catch(e){} qrScanner=null; }
+  document.getElementById('qr-reader').innerHTML='';
+  qrScanner=new Html5Qrcode('qr-reader');
+  qrScanner.start(
+    {facingMode:'environment'},
+    {fps:10,qrbox:{width:260,height:260}},
+    txt=>onQR(txt),
+    ()=>{}
+  ).then(()=>{ qrRunning=true; })
+   .catch(()=>toast('Permite el acceso a la cámara e intenta de nuevo 📷','fail'));
 }
 function stopQrBack(){
-  stopQR().then(()=>{ renderZones(); showScreen('zones'); });
+  // Volver a zonas: pausar cámara (no liberar → no pide permiso en la siguiente zona)
+  pauseQR();
+  renderZones();
+  showScreen('zones');
 }
 function onQR(txt){
   let mapped=QR_MAP[txt.trim()];
@@ -1042,7 +1064,7 @@ function onQR(txt){
   }
   if(!mapped){ toast('QR no reconocido. Busca el QR correcto 🤔','fail'); return; }
   if(mapped!==S.cur){ toast('Ese es el QR de '+ZONE_INFO[mapped].name+'. Busca el de '+ZONE_INFO[S.cur].name+' 😄','fail'); return; }
-  stopQR().then(()=>activateZone(mapped));
+  pauseQR(); activateZone(mapped);
 }
 function handleQrFile(input){
   const file=input.files[0]; if(!file) return;

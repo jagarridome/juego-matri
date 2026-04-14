@@ -817,7 +817,7 @@ const Q = {
     {q:'¿Cuál fue el último concierto de Benja?',                    opts:['Kendrick Lamar','Korn',"Guns N' Roses"],                      emojis:['🎤','🌽','🌹'],                            a:'Kendrick Lamar'},
     {q:'¿Cuál es el personaje ficticio favorito de Benja?',          opts:['Kaladine','Aragorn','Jon Snow'],                              emojis:['🗡️','👑','❄️'],                            a:'Kaladine'},
     {q:'¿Cuál es el sabor de helado favorito de Benja?',             opts:['Chocolate','Vainilla','Menta chips'],                         emojis:['🍫','🍦','🌿'],                            a:'Chocolate'},
-    {q:'¿Cuál es el cereal favorito de Benja?',                      opts:['Choco Crispis','Froot Loops','Zucaritas'],                    emojis:['🐸','🌈','🐯'],                            a:'Choco Crispis'},
+    {q:'¿Cuál es el cereal favorito de Benja?',                      opts:['Choco Krispis','Froot Loops','Zucaritas'],                    emojis:['🐸','🌈','🐯'],                            a:'Choco Krispis'},
     {q:'¿Cuál es el snack favorito de Benja?',                       opts:['Gomitas','Papas fritas','Super 8'],                           emojis:['🐻','🍟','🍫'],                            a:'Gomitas'},
     {q:'¿Qué comida no puede faltar en el plato de Benja?',          opts:['Ají','Choclo','Cebolla'],                                     emojis:['🌶️','🌽','🧅'],                            a:'Ají'},
     {q:'¿Cuál es la comida favorita del día para Benja?',            opts:['Once','Desayuno','Almuerzo'],                                 emojis:['🫖','🌅','☀️'],                            a:'Once'},
@@ -1433,7 +1433,6 @@ async function loadCount(){
 }
 
 async function loadWinner(){
-  if(!isClosed()) return;
   const w=await api('winner');
   const banner=document.getElementById('winner-banner');
   if(!banner) return;

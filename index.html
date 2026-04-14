@@ -449,7 +449,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#C4A882" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
         </div>
         <div class="title title-sm mt-2" id="zones-hello"></div>
-        <div class="muted mt-2">Completa las 3 zonas escaneando el QR de cada una.<br>Puedes hacerlo en el orden que prefieras.</div>
+        <div class="muted mt-2" id="zones-subtitle">Completa las 3 zonas escaneando el QR de cada una.<br>Puedes hacerlo en el orden que prefieras.</div>
       </div>
 
       <div id="zone-nums-card" class="card mb-4" style="display:none;text-align:center">
@@ -463,7 +463,7 @@
         <div style="font-size:.76rem;color:#9A8F85;line-height:1.4">Todavía tienes chance de demostrar que tu amistad vale la pena. Sigue mandando respuestas y suma números al sorteo.</div>
       </div>
 
-      <div class="card mb-4">
+      <div class="card mb-4" id="zones-progress-card">
         <div class="section-title" style="margin-bottom:10px">Tu progreso</div>
         <div class="pills" id="zone-pills">
           <div class="pill" id="pill-bar">🍹 Bar</div>
@@ -508,13 +508,10 @@
         <div id="cta-card-mode">
           <button class="btn btn-gold" onclick="showAllComplete(false)">Sube tu foto con el cartón completo 📸</button>
         </div>
-        <!-- Modo sin cartón: selfie (auto cuando partNums >= 2) -->
+        <!-- Modo sin cartón: racha trivia (auto cuando partNums >= 2) -->
         <div id="cta-nocard-mode" style="display:none">
-          <div style="background:rgba(201,169,110,.08);border:1px solid rgba(185,155,90,.22);border-radius:14px;padding:14px 16px;text-align:center;margin-bottom:12px">
-            <div style="font-size:.95rem;font-weight:700;color:#7a6530;margin-bottom:4px">😅 ¿Sin cartón?</div>
-            <div style="font-size:.8rem;color:#9A8F85;line-height:1.5">Una selfie es suficiente para seguir sumando chances 🎯</div>
-          </div>
-          <button class="btn btn-gold" onclick="showAllComplete(true)">Mandar foto 📷</button>
+          <div class="muted tc mb-3" style="font-size:.8rem">5 preguntas · 3 correctas = 1 número más 🎟️</div>
+          <button class="btn btn-gold" onclick="startRacha()">Seguir jugando 🎲</button>
         </div>
       </div>
       <div id="play-again-cta" style="display:none" class="mt-4">
@@ -657,6 +654,65 @@
       </div>
       <button class="btn btn-primary mt-4" onclick="playAgain()">Jugar de nuevo</button>
       <button onclick="showScreen('home')" style="background:none;border:none;color:#9A8F85;font-family:'Raleway',sans-serif;font-size:.85rem;cursor:pointer;padding:12px 8px;text-decoration:underline;text-underline-offset:3px;">Volver al inicio</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       RACHA TRIVIA
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-racha-trivia">
+    <div class="container" style="max-width:448px">
+
+      <!-- Estado: jugando -->
+      <div id="rt-playing">
+        <div class="tc mt-4 mb-2">
+          <div style="font-size:2.5rem">🔥</div>
+          <div class="title title-sm mt-2">¡Asegúrate el premio! 🏆</div>
+          <div class="muted mt-2" style="font-size:.82rem">5 preguntas · 3 correctas = 1 número más 🎟️</div>
+        </div>
+        <div class="dots mt-3 mb-4" id="rt-dots"></div>
+        <div class="card mb-4" id="rt-card">
+          <div class="q-text" id="rt-text"></div>
+          <div class="opts" id="rt-opts"></div>
+        </div>
+        <div id="rt-feedback" class="q-feedback" style="display:none;margin-bottom:8px"></div>
+        <div id="rt-next-area" style="display:none;margin-top:8px">
+          <button class="btn btn-outline" onclick="rachaNext()">Siguiente →</button>
+        </div>
+        <div style="text-align:center;margin-top:16px">
+          <button onclick="renderZones();showScreen('zones')" style="background:none;border:none;color:#9A8F85;font-family:'Raleway',sans-serif;font-size:.85rem;cursor:pointer;padding:8px;text-decoration:underline;text-underline-offset:3px;">← Volver a zonas</button>
+        </div>
+      </div>
+
+      <!-- Estado: ganaste -->
+      <div id="rt-win" style="display:none;text-align:center">
+        <span style="font-size:5rem;display:block;margin-top:2rem">🎉</span>
+        <div class="title title-sm mt-4">¡Ganaste un número más!</div>
+        <div class="card mt-6 mb-4">
+          <div style="color:#a89e94;margin-bottom:10px;font-size:.9rem">Tu nuevo número de participante</div>
+          <div class="winner-num" id="rt-win-num">...</div>
+        </div>
+        <div id="rt-win-nums-card" class="card mb-4" style="display:none">
+          <div style="color:#a89e94;font-size:.83rem;margin-bottom:8px">Todos tus números 🎟️</div>
+          <div id="rt-win-nums-list" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+        </div>
+        <button class="btn btn-primary mt-4" onclick="playAgain()">Jugar de nuevo</button>
+        <br>
+        <button onclick="showScreen('home')" style="background:none;border:none;color:#9A8F85;font-family:'Raleway',sans-serif;font-size:.85rem;cursor:pointer;padding:12px 8px;text-decoration:underline;text-underline-offset:3px;">Volver al inicio</button>
+      </div>
+
+      <!-- Estado: se resetea -->
+      <div id="rt-reset" style="display:none;text-align:center">
+        <span style="font-size:4rem;display:block;margin-top:2rem">😅</span>
+        <div class="title title-sm mt-4">¡Casi!</div>
+        <div class="card mt-4 mb-4">
+          <div style="color:#a89e94;font-size:.9rem;line-height:1.6">Necesitabas 3 correctas.<br>¡Vuelve a intentarlo!</div>
+        </div>
+        <button class="btn btn-gold mt-2" onclick="startRacha()">🔥 Volver a intentar</button>
+        <br>
+        <button onclick="renderZones();showScreen('zones')" style="background:none;border:none;color:#9A8F85;font-family:'Raleway',sans-serif;font-size:.85rem;cursor:pointer;padding:12px 8px;text-decoration:underline;text-underline-offset:3px;">← Volver a zonas</button>
+      </div>
+
     </div>
   </div>
 
@@ -883,7 +939,8 @@ function blank() {
   return {
     name:'', zones:{bar:{done:false,score:0},fotos:{done:false,score:0},snacks:{done:false,score:0}},
     cur:null, correct:0, wrong:0, pool:[], poolIdx:0, submitted:false, partNum:null,
-    startedAt:null, usedQs:[], partNums:[]
+    startedAt:null, usedQs:[], partNums:[],
+    rachaPool:[], rachaCorrect:0, rachaWrong:0, rachaIdx:0, rachaHistory:[]
   };
 }
 let S = (()=>{ try{ const r=localStorage.getItem(SK); return r?{...blank(),...JSON.parse(r)}:blank(); }catch(e){return blank();} })();
@@ -1003,6 +1060,11 @@ function renderZones(){
   if(ncMode)   ncMode.style.display=noCard?'block':'none';
   const ncBanner=document.getElementById('nocard-banner');
   if(ncBanner) ncBanner.style.display=noCard?'block':'none';
+  // Ocultar progreso y zonas cuando ya no hay cartones
+  const hide=v=>v&&(v.style.display=noCard?'none':'');
+  hide(document.getElementById('zones-subtitle'));
+  hide(document.getElementById('zones-progress-card'));
+  ['bar','fotos','snacks'].forEach(z=>hide(document.getElementById('zc-'+z)));
 }
 
 function scanZone(z){
@@ -1212,11 +1274,11 @@ function zoneCompleted(){
     if(noCard){
       const info=document.createElement('div');
       info.style.cssText='background:rgba(201,169,110,.08);border:1px solid rgba(185,155,90,.22);border-radius:14px;padding:14px;text-align:center;margin-bottom:12px';
-      info.innerHTML='<div style="font-size:.95rem;font-weight:700;color:#7a6530;margin-bottom:4px">😅 ¿Sin cartón?</div><div style="font-size:.8rem;color:#9A8F85;line-height:1.5">Una selfie es suficiente para seguir sumando chances 🎯</div>';
+      info.innerHTML='<div style="font-size:.8rem;color:#9A8F85;line-height:1.5">5 preguntas · 3 correctas = 1 número más 🎟️</div>';
       btns.appendChild(info);
       const b=document.createElement('button');
-      b.className='btn btn-gold'; b.textContent='Mandar foto 📷';
-      b.onclick=()=>showAllComplete(true); btns.appendChild(b);
+      b.className='btn btn-gold'; b.textContent='Seguir jugando 🎲';
+      b.onclick=()=>startRacha(); btns.appendChild(b);
     } else {
       const b=document.createElement('button');
       b.className='btn btn-gold'; b.textContent='Sube tu foto con el cartón completo 📸';
@@ -1231,6 +1293,105 @@ function zoneCompleted(){
   const stampCard=document.getElementById('zc-stamp-card');
   if(stampCard) stampCard.style.display=(S.partNums||[]).length>=2?'none':'block';
   showScreen('zone-complete'); bigConfetti();
+}
+
+// ================================================================
+// RACHA TRIVIA
+// ================================================================
+function startRacha(){
+  const allQ=[...Q.javi,...Q.benja,...Q.pareja];
+  S.rachaPool=shuffle([...allQ]).slice(0,5);
+  S.rachaCorrect=0; S.rachaWrong=0; S.rachaIdx=0; S.rachaHistory=[];
+  save();
+  document.getElementById('rt-playing').style.display='block';
+  document.getElementById('rt-win').style.display='none';
+  document.getElementById('rt-reset').style.display='none';
+  showRachaQ();
+}
+
+function showRachaQ(){
+  const q=S.rachaPool[S.rachaIdx];
+  renderRachaDots();
+  document.getElementById('rt-text').textContent=q.q;
+  document.getElementById('rt-feedback').style.display='none';
+  document.getElementById('rt-next-area').style.display='none';
+  const card=document.getElementById('rt-card');
+  if(card){ card.style.background=''; card.style.borderColor=''; }
+  const pairs=shuffle(q.opts.map((t,i)=>({t,e:(q.emojis||[])[i]||''})));
+  const grid=document.getElementById('rt-opts');
+  grid.innerHTML='';
+  pairs.forEach(({t,e})=>{
+    const btn=document.createElement('button');
+    btn.className='opt'; btn.textContent=(e?e+' ':'')+t;
+    btn.onclick=()=>rachaAnswer(t,q.a,btn);
+    grid.appendChild(btn);
+  });
+  showScreen('racha-trivia');
+}
+
+function renderRachaDots(){
+  const c=document.getElementById('rt-dots'); c.innerHTML='';
+  const hist=S.rachaHistory||[];
+  hist.forEach(r=>{ const d=document.createElement('div'); d.className='dot '+r; c.appendChild(d); });
+  const remaining=5-S.rachaIdx;
+  for(let i=0;i<remaining;i++){ const d=document.createElement('div'); d.className='dot'; c.appendChild(d); }
+}
+
+function rachaAnswer(chosen,correct,btn){
+  document.querySelectorAll('#rt-opts .opt').forEach(b=>b.disabled=true);
+  const ok=chosen===correct;
+  // Solo marcar la opción elegida (correcto/incorrecto), sin revelar la respuesta correcta
+  btn.classList.add(ok?'correct':'wrong');
+  const msg=ok?pickPos():pickNeg();
+  const card=document.getElementById('rt-card');
+  if(card){ card.style.transition='background .35s'; card.style.background=ok?'rgba(90,140,110,.12)':'rgba(192,99,74,.1)'; card.style.borderColor=ok?'rgba(90,140,110,.4)':'rgba(192,99,74,.35)'; }
+  const fb=document.getElementById('rt-feedback');
+  fb.textContent=msg; fb.className='q-feedback '+(ok?'correct':'wrong'); fb.style.display='block';
+  if(!S.rachaHistory) S.rachaHistory=[];
+  if(ok){ S.rachaCorrect++; S.rachaHistory.push('correct'); fireConfetti(); }
+  else  { S.rachaWrong++;   S.rachaHistory.push('wrong'); }
+  S.rachaIdx++;
+  save(); renderRachaDots();
+  const remaining=5-S.rachaIdx;
+  const canWin=(S.rachaCorrect+remaining)>=3;
+  const finished=S.rachaIdx>=5;
+  // Ganar al tiro cuando llega a 3 correctas (sin esperar el resto)
+  if(S.rachaCorrect>=3){ setTimeout(()=>rachaWin(),1400); return; }
+  if(finished || !canWin){ setTimeout(()=>rachaShowReset(),1400); return; }
+  setTimeout(()=>{ document.getElementById('rt-next-area').style.display='block'; },700);
+}
+
+function rachaNext(){ showRachaQ(); }
+
+async function rachaWin(){
+  bigConfetti();
+  document.getElementById('rt-playing').style.display='none';
+  document.getElementById('rt-win').style.display='block';
+  document.getElementById('rt-win-num').textContent='...';
+  try{
+    const payload=JSON.stringify({action:'register',nombre:S.name,puntaje:0,tiempo:0,foto:''});
+    const res=await fetch(GAS_API_URL,{method:'POST',body:payload});
+    const d=await res.json();
+    if(d.success){
+      if(!S.partNums) S.partNums=[];
+      S.partNums.push(d.numero);
+      S.submitted=true; save();
+      document.getElementById('rt-win-num').textContent='#'+d.numero;
+      const nums=S.partNums;
+      if(nums.length>1){
+        const wncard=document.getElementById('rt-win-nums-card');
+        const wnlist=document.getElementById('rt-win-nums-list');
+        wncard.style.display='block';
+        wnlist.innerHTML=nums.map(n=>`<span class="num-chip">#${n}</span>`).join('');
+      }
+      renderPartNums();
+    } else { document.getElementById('rt-win-num').textContent='🎟️'; }
+  }catch(e){ document.getElementById('rt-win-num').textContent='🎟️'; }
+}
+
+function rachaShowReset(){
+  document.getElementById('rt-playing').style.display='none';
+  document.getElementById('rt-reset').style.display='block';
 }
 
 // ================================================================

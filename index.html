@@ -514,7 +514,7 @@
             <div style="font-size:.95rem;font-weight:700;color:#7a6530;margin-bottom:4px">😅 ¿Sin cartón?</div>
             <div style="font-size:.8rem;color:#9A8F85;line-height:1.5">Una selfie es suficiente para seguir sumando chances 🎯</div>
           </div>
-          <button class="btn btn-gold" onclick="showAllComplete(true)">Participar con selfie 🤳</button>
+          <button class="btn btn-gold" onclick="showAllComplete(true)">Mandar foto 📷</button>
         </div>
       </div>
       <div id="play-again-cta" style="display:none" class="mt-4">
@@ -1204,7 +1204,7 @@ function zoneCompleted(){
       info.innerHTML='<div style="font-size:.95rem;font-weight:700;color:#7a6530;margin-bottom:4px">😅 ¿Sin cartón?</div><div style="font-size:.8rem;color:#9A8F85;line-height:1.5">Una selfie es suficiente para seguir sumando chances 🎯</div>';
       btns.appendChild(info);
       const b=document.createElement('button');
-      b.className='btn btn-gold'; b.textContent='Participar con selfie 🤳';
+      b.className='btn btn-gold'; b.textContent='Mandar foto 📷';
       b.onclick=()=>showAllComplete(true); btns.appendChild(b);
     } else {
       const b=document.createElement('button');

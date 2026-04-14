@@ -1187,7 +1187,7 @@ function nextQuestion(){ showQ(); }
 // ================================================================
 function zoneCompleted(){
   const z=S.cur;
-  const score=S.wrong===0?2:S.correct*0.5;
+  const score=S.wrong===0?2:1;
   S.zones[z].done=true; S.zones[z].score=score; save();
 
   const info=ZONE_INFO[z];
@@ -1278,7 +1278,7 @@ async function submitParticipation(){
   document.getElementById('submit-btn').disabled=true;
   document.getElementById('submit-loader').style.display='flex';
   const tiempo=S.startedAt?Math.round((Date.now()-S.startedAt)/1000):9999;
-  const payload=JSON.stringify({action:'register',nombre:S.name,puntaje:totalScore(),tiempo,foto:selfieB64});
+  const payload=JSON.stringify({action:'register',nombre:S.name,puntaje:Math.round(totalScore()),tiempo,foto:selfieB64});
   let lastErr;
   for(let attempt=0;attempt<3;attempt++){
     try{

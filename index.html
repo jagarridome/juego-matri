@@ -335,6 +335,16 @@
         </div>
       </div>
 
+      <!-- Números de sorteo — visible cuando hay participaciones -->
+      <div id="home-nums-card" style="display:none" class="card mb-4">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-family:'Raleway',sans-serif;font-size:.88rem;font-weight:700;color:#7a6530">🎟️ Tus números de sorteo</div>
+          <span id="home-nums-name" style="font-size:.78rem;color:#b08a6e"></span>
+        </div>
+        <div id="home-nums-list" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        <button onclick="startFromHome()" style="background:none;border:none;color:#b08a6e;font-family:'Raleway',sans-serif;font-size:.78rem;cursor:pointer;margin-top:10px;text-decoration:underline;text-underline-offset:3px">Jugar de nuevo →</button>
+      </div>
+
       <!-- Winner banner (shown after deadline) -->
       <div id="winner-banner" style="display:none" class="card mb-4" style="text-align:center;border-color:rgba(201,169,110,.4);background:rgba(201,169,110,.08)">
         <div style="font-size:2rem;margin-bottom:8px">🏆</div>
@@ -373,11 +383,6 @@
       </div>
 
       <div class="tc mt-8">
-        <div id="home-nums-card" style="display:none;margin-top:16px" class="card">
-          <div style="color:#a89e94;font-size:.78rem;margin-bottom:8px">Tus números 🎟️ — <span id="home-nums-name" style="color:#b08a6e"></span></div>
-          <div id="home-nums-list" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
-          <button onclick="playAgain()" style="background:none;border:none;color:#b08a6e;font-family:'Raleway',sans-serif;font-size:.78rem;cursor:pointer;margin-top:10px;text-decoration:underline;text-underline-offset:3px">Jugar de nuevo</button>
-        </div>
         <div class="mt-4">
           <a href="#" onclick="goToRaffle(event)" style="color:#9A8F85;font-size:.75rem;text-decoration:none">Acceso privado 🎰</a>
         </div>
@@ -491,10 +496,17 @@
       <div id="all-done-cta" style="display:none" class="mt-4">
         <div class="divider"></div>
         <div class="tc mb-4" style="color:#2e8a50;font-size:1.05rem">🎉 ¡Completaste las 3 zonas!</div>
-        <button class="btn btn-gold" onclick="showAllComplete(false)">Sube una foto con tu cartón completo</button>
-        <div id="no-card-cta" style="display:none;margin-top:12px">
-          <div style="text-align:center;color:#9A8F85;font-size:.78rem;margin-bottom:8px">¿Se te acabaron los cartones?</div>
-          <button class="btn btn-outline" onclick="showAllComplete(true)">Sigue sumando chances igual 🎯</button>
+        <!-- Modo normal: cartón físico -->
+        <div id="cta-card-mode">
+          <button class="btn btn-gold" onclick="showAllComplete(false)">Sube tu foto con el cartón completo 📸</button>
+        </div>
+        <!-- Modo sin cartón: selfie (auto cuando partNums >= 2) -->
+        <div id="cta-nocard-mode" style="display:none">
+          <div style="background:rgba(201,169,110,.08);border:1px solid rgba(185,155,90,.22);border-radius:14px;padding:14px 16px;text-align:center;margin-bottom:12px">
+            <div style="font-size:.95rem;font-weight:700;color:#7a6530;margin-bottom:4px">😅 ¿Sin cartón?</div>
+            <div style="font-size:.8rem;color:#9A8F85;line-height:1.5">Una selfie es suficiente para seguir sumando chances 🎯</div>
+          </div>
+          <button class="btn btn-gold" onclick="showAllComplete(true)">Participar con selfie 🤳</button>
         </div>
       </div>
       <div id="play-again-cta" style="display:none" class="mt-4">
@@ -957,8 +969,12 @@ function renderZones(){
   document.getElementById('prog-text').textContent=done+' de 3 completadas';
   document.getElementById('all-done-cta').style.display=(done===3&&!S.submitted)?'block':'none';
   document.getElementById('play-again-cta').style.display=(done===3&&S.submitted)?'block':'none';
-  const ncCta=document.getElementById('no-card-cta');
-  if(ncCta) ncCta.style.display=(done===3&&!S.submitted&&(S.partNums||[]).length>=2)?'block':'none';
+  // Auto-switch entre modo cartón y modo selfie según historial de participaciones
+  const noCard=(S.partNums||[]).length>=2;
+  const cardMode=document.getElementById('cta-card-mode');
+  const ncMode=document.getElementById('cta-nocard-mode');
+  if(cardMode) cardMode.style.display=noCard?'none':'block';
+  if(ncMode)   ncMode.style.display=noCard?'block':'none';
 }
 
 function scanZone(z){
@@ -1142,17 +1158,19 @@ function zoneCompleted(){
   const done3=Object.values(S.zones).filter(z=>z.done).length===3;
 
   if(done3){
-    const b=document.createElement('button');
-    b.className='btn btn-gold'; b.textContent='Sube una foto con tu cartón completo';
-    b.onclick=()=>showAllComplete(false); btns.appendChild(b);
-    if((S.partNums||[]).length>=2){
-      const sep=document.createElement('div');
-      sep.style.cssText='text-align:center;color:#9A8F85;font-size:.78rem;margin-top:12px;margin-bottom:4px';
-      sep.textContent='¿Se te acabaron los cartones?'; btns.appendChild(sep);
-      const b2=document.createElement('button');
-      b2.className='btn btn-outline'; b2.style.marginTop='4px';
-      b2.textContent='Sigue sumando chances igual 🎯';
-      b2.onclick=()=>showAllComplete(true); btns.appendChild(b2);
+    const noCard=(S.partNums||[]).length>=2;
+    if(noCard){
+      const info=document.createElement('div');
+      info.style.cssText='background:rgba(201,169,110,.08);border:1px solid rgba(185,155,90,.22);border-radius:14px;padding:14px;text-align:center;margin-bottom:12px';
+      info.innerHTML='<div style="font-size:.95rem;font-weight:700;color:#7a6530;margin-bottom:4px">😅 ¿Sin cartón?</div><div style="font-size:.8rem;color:#9A8F85;line-height:1.5">Una selfie es suficiente para seguir sumando chances 🎯</div>';
+      btns.appendChild(info);
+      const b=document.createElement('button');
+      b.className='btn btn-gold'; b.textContent='Participar con selfie 🤳';
+      b.onclick=()=>showAllComplete(true); btns.appendChild(b);
+    } else {
+      const b=document.createElement('button');
+      b.className='btn btn-gold'; b.textContent='Sube tu foto con el cartón completo 📸';
+      b.onclick=()=>showAllComplete(false); btns.appendChild(b);
     }
   } else {
     const b=document.createElement('button');

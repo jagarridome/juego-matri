@@ -303,6 +303,8 @@
       0%,100% { transform:translateY(0); }
       50%      { transform:translateY(8px); }
     }
+    @keyframes destFadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .dest-slide-in { animation:destFadeIn .35s ease both; }
   </style>
 </head>
 <body>
@@ -354,6 +356,14 @@
         <div id="wb-name" style="font-family:'Brittany Signature',cursive;font-size:2rem;color:#4a3824;margin-bottom:8px"></div>
         <div id="wb-num" style="font-family:'Raleway',sans-serif;font-size:.9rem;color:#a89e94;margin-bottom:12px"></div>
         <img id="wb-photo" src="" alt="foto ganador" style="display:none;width:120px;height:120px;object-fit:cover;border-radius:50%;border:3px solid rgba(201,169,110,.5);margin:0 auto">
+        <button onclick="showScreen('respuestas')" style="margin-top:14px;background:none;border:1px solid rgba(201,169,110,.5);border-radius:50px;color:#9A8F85;font-family:'Raleway',sans-serif;font-size:.82rem;cursor:pointer;padding:8px 20px;letter-spacing:.05em">📋 Ver respuestas</button>
+      </div>
+
+      <!-- Destacados -->
+      <div id="destacados-card" style="display:none" class="card mb-4">
+        <div style="font-family:'Raleway',sans-serif;font-size:.72rem;font-weight:700;color:#a89e94;text-align:center;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px">Destacados del juego</div>
+        <div id="destacados-slide" style="text-align:center;min-height:72px"></div>
+        <div id="destacados-dots" style="display:flex;justify-content:center;gap:7px;margin-top:12px"></div>
       </div>
 
       <!-- How to play -->
@@ -461,6 +471,7 @@
       <div id="nocard-banner" style="display:none;background:rgba(201,169,110,.10);border:1px solid rgba(185,155,90,.28);border-radius:14px;padding:12px 16px;margin-bottom:16px;text-align:center">
         <div style="font-size:.88rem;font-weight:700;color:#7a6530;margin-bottom:3px">🔥 ¿Se acabaron los cartones?<br>¡No importa, no pierdas la racha!</div>
         <div style="font-size:.76rem;color:#9A8F85;line-height:1.4">Todavía tienes chance de demostrar que tu amistad vale la pena. Sigue mandando respuestas y suma números al sorteo.</div>
+        <button onclick="startRacha()" class="btn btn-gold" style="margin-top:10px;font-size:.85rem;padding:10px 24px">🎲 Seguir jugando</button>
       </div>
 
       <div class="card mb-4" id="zones-progress-card">
@@ -769,6 +780,12 @@
           </div>
         </div>
 
+        <div class="card mb-4">
+          <div class="section-title mb-1">Ranking de puntajes</div>
+          <div style="font-size:.78rem;color:#9A8F85;margin-bottom:12px;line-height:1.4">Puntaje total acumulado en todas las participaciones.</div>
+          <div id="lb-scores"><div class="empty">Cargando...</div></div>
+        </div>
+
         <div class="tc mb-2 raffle-pointer">▼</div>
         <canvas id="raffle-canvas" width="340" height="340" style="width:100%;max-width:340px;border-radius:50%;box-shadow:0 0 40px rgba(139,88,196,.4);display:block;margin:0 auto;"></canvas>
 
@@ -795,6 +812,18 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       RESPUESTAS
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="screen-respuestas">
+    <div class="container">
+      <button class="back mt-2" onclick="showScreen('home')">← Volver</button>
+      <div class="title title-sm tc mt-4 mb-2">📋 Respuestas correctas</div>
+      <div class="muted tc mb-6" style="font-size:.85rem">Todas las respuestas de la trivia</div>
+      <div id="respuestas-content"></div>
     </div>
   </div>
 
@@ -919,7 +948,7 @@ const Q = {
     {q:'¿Qué tarea del hogar odia Javi?',                            opts:['Sacar la basura','Lavar la ropa','Limpiar el baño'],          emojis:['🗑️','👕','🚿'],                            a:'Sacar la basura'},
     {q:'¿Cuál es la tarea del hogar favorita de Benja?',             opts:['Cocinar','Ordenar','Limpiar'],                                emojis:['👨‍🍳','📦','🧽'],                          a:'Cocinar'},
     {q:'¿Cuál es la tarea del hogar favorita de Javi?',              opts:['Hacer la cama','Cocinar','Barrer'],                           emojis:['🛏️','🍳','🧹'],                            a:'Hacer la cama'},
-    {q:'¿Cuántos aros tienen entre los dos?',                        opts:['8','5','10'],                                                  emojis:['💎','💍','🔮'],                            a:'8'},
+    {q:'¿Cuántos aros tienen entre los dos?',                        opts:['9','5','10'],                                                  emojis:['💎','💍','🔮'],                            a:'9'},
     {q:'¿Cuántos tatuajes tienen entre los dos?',                    opts:['4','2','6'],                                                   emojis:['🎨','✏️','🖊️'],                            a:'4'}
   ]
 };
@@ -940,7 +969,9 @@ function blank() {
     name:'', zones:{bar:{done:false,score:0},fotos:{done:false,score:0},snacks:{done:false,score:0}},
     cur:null, correct:0, wrong:0, pool:[], poolIdx:0, submitted:false, partNum:null,
     startedAt:null, usedQs:[], partNums:[],
-    rachaPool:[], rachaCorrect:0, rachaWrong:0, rachaIdx:0, rachaHistory:[]
+    zonePoints:0, currentAttempts:0, qStartTime:0,
+    cat_javi:0, cat_benja:0, cat_pareja:0,
+    rachaPool:[], rachaCorrect:0, rachaWrong:0, rachaIdx:0, rachaHistory:[], rachaPoints:0, rachaQStartTime:0
   };
 }
 let S = (()=>{ try{ const r=localStorage.getItem(SK); return r?{...blank(),...JSON.parse(r)}:blank(); }catch(e){return blank();} })();
@@ -963,8 +994,27 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById('screen-'+id);
   if(el){ el.classList.add('active'); window.scrollTo(0,0); }
-  // Liberar cámara solo al salir al inicio
   if(id==='home') stopQR();
+  if(id==='respuestas') renderRespuestas();
+}
+function renderRespuestas(){
+  const cats=[
+    {label:'Sobre Javi 👩‍🦰',  qs:Q.javi},
+    {label:'Sobre Benja 🧔',   qs:Q.benja},
+    {label:'Sobre la Pareja 💑',qs:Q.pareja}
+  ];
+  const el=document.getElementById('respuestas-content');
+  el.innerHTML=cats.map(cat=>`
+    <div class="card mb-4">
+      <div class="section-title mb-4">${cat.label}</div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        ${cat.qs.map((q,i)=>`
+          <div style="border-bottom:1px solid rgba(185,155,90,.12);padding-bottom:12px">
+            <div style="font-size:.82rem;color:#9A8F85;margin-bottom:3px">${i+1}. ${q.q}</div>
+            <div style="font-weight:700;color:#5a8c6e;font-size:.9rem">✓ ${q.a}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
 }
 function isClosed(){ return new Date()>GAME_DEADLINE; }
 function startFromHome(){
@@ -1158,15 +1208,15 @@ function activateZone(z){
   document.getElementById('zi-emoji').textContent=info.emoji;
   document.getElementById('zi-title').textContent='¡Zona '+info.name+'!';
   document.getElementById('zi-msg').textContent=info.msg;
-  S.cur=z; S.correct=0; S.wrong=0; S.answerHistory=[];
+  S.cur=z; S.correct=0; S.wrong=0; S.answerHistory=[]; S.zonePoints=0; S.currentAttempts=0;
   if(!S.startedAt) S.startedAt=Date.now();
   const used=new Set(S.usedQs||[]);
-  function freshFrom(cat){ const f=cat.map(q=>({...q})).filter(q=>!used.has(q.q)); return f.length>0?f:cat.map(q=>({...q})); }
+  function freshFrom(cat,catName){ const f=cat.map(q=>({...q,_cat:catName})).filter(q=>!used.has(q.q)); return f.length>0?f:cat.map(q=>({...q,_cat:catName})); }
   // Pick 2 from each category, interleaved: javi→benja→pareja→javi→benja→pareja
   // This gives 6 questions max, equitative, enough even if player misses several
-  const sJ=shuffle(freshFrom(Q.javi));
-  const sB=shuffle(freshFrom(Q.benja));
-  const sP=shuffle(freshFrom(Q.pareja));
+  const sJ=shuffle(freshFrom(Q.javi,'javi'));
+  const sB=shuffle(freshFrom(Q.benja,'benja'));
+  const sP=shuffle(freshFrom(Q.pareja,'pareja'));
   const pool=[];
   for(let i=0;i<2;i++){
     if(sJ[i]) pool.push(sJ[i]);
@@ -1210,6 +1260,7 @@ function showQ(){
   });
   document.getElementById('q-next-area').style.display='none';
   document.getElementById('q-done-area').style.display='none';
+  S.qStartTime=Date.now(); S.currentAttempts=0; save();
   showScreen('question');
 }
 
@@ -1234,8 +1285,19 @@ function answer(chosen,correct,btn){
   if(!S.usedQs) S.usedQs=[];
   if(!S.answerHistory) S.answerHistory=[];
   const curQ=S.pool[S.poolIdx];
-  if(curQ&&!S.usedQs.includes(curQ.q)) S.usedQs.push(curQ.q);
+  S.currentAttempts=(S.currentAttempts||0)+1;
   if(ok){
+    if(curQ&&!S.usedQs.includes(curQ.q)) S.usedQs.push(curQ.q);
+    const elapsed=Date.now()-(S.qStartTime||Date.now());
+    const att=S.currentAttempts;
+    const attemptBonus=att===1?50:att===2?20:0;
+    const speedBonus=(att<=2)?(elapsed<=5000?40:elapsed<=10000?20:0):0;
+    const pts=100+attemptBonus+speedBonus;
+    S.zonePoints=(S.zonePoints||0)+pts;
+    const cat=curQ&&curQ._cat;
+    if(cat==='javi') S.cat_javi=(S.cat_javi||0)+pts;
+    else if(cat==='benja') S.cat_benja=(S.cat_benja||0)+pts;
+    else if(cat==='pareja') S.cat_pareja=(S.cat_pareja||0)+pts;
     S.correct++; S.poolIdx++;
     S.answerHistory.push('correct');
     save(); fireConfetti(); renderDots();
@@ -1244,6 +1306,7 @@ function answer(chosen,correct,btn){
       document.getElementById(S.correct>=2?'q-done-area':'q-next-area').style.display='block';
     },700);
   } else {
+    S.zonePoints=(S.zonePoints||0)-15;
     S.wrong++; S.poolIdx++;
     S.answerHistory.push('wrong');
     save(); renderDots();
@@ -1260,7 +1323,7 @@ function nextQuestion(){ showQ(); }
 // ================================================================
 function zoneCompleted(){
   const z=S.cur;
-  const score=S.wrong===0?2:1;
+  const score=Math.max(0,S.zonePoints||0);
   S.zones[z].done=true; S.zones[z].score=score; save();
 
   const info=ZONE_INFO[z];
@@ -1299,9 +1362,9 @@ function zoneCompleted(){
 // RACHA TRIVIA
 // ================================================================
 function startRacha(){
-  const allQ=[...Q.javi,...Q.benja,...Q.pareja];
+  const allQ=[...Q.javi.map(q=>({...q,_cat:'javi'})),...Q.benja.map(q=>({...q,_cat:'benja'})),...Q.pareja.map(q=>({...q,_cat:'pareja'}))];
   S.rachaPool=shuffle([...allQ]).slice(0,5);
-  S.rachaCorrect=0; S.rachaWrong=0; S.rachaIdx=0; S.rachaHistory=[];
+  S.rachaCorrect=0; S.rachaWrong=0; S.rachaIdx=0; S.rachaHistory=[]; S.rachaPoints=0;
   save();
   document.getElementById('rt-playing').style.display='block';
   document.getElementById('rt-win').style.display='none';
@@ -1317,6 +1380,7 @@ function showRachaQ(){
   document.getElementById('rt-next-area').style.display='none';
   const card=document.getElementById('rt-card');
   if(card){ card.style.background=''; card.style.borderColor=''; }
+  S.rachaQStartTime=Date.now(); save();
   const pairs=shuffle(q.opts.map((t,i)=>({t,e:(q.emojis||[])[i]||''})));
   const grid=document.getElementById('rt-opts');
   grid.innerHTML='';
@@ -1348,8 +1412,20 @@ function rachaAnswer(chosen,correct,btn){
   const fb=document.getElementById('rt-feedback');
   fb.textContent=msg; fb.className='q-feedback '+(ok?'correct':'wrong'); fb.style.display='block';
   if(!S.rachaHistory) S.rachaHistory=[];
-  if(ok){ S.rachaCorrect++; S.rachaHistory.push('correct'); fireConfetti(); }
-  else  { S.rachaWrong++;   S.rachaHistory.push('wrong'); }
+  if(ok){
+    const elapsed=Date.now()-(S.rachaQStartTime||Date.now());
+    const speedBonus=elapsed<=5000?40:elapsed<=10000?20:0;
+    const rPts=100+50+speedBonus;
+    S.rachaPoints=(S.rachaPoints||0)+rPts;
+    const rCat=S.rachaPool[S.rachaIdx-1]&&S.rachaPool[S.rachaIdx-1]._cat;
+    if(rCat==='javi') S.cat_javi=(S.cat_javi||0)+rPts;
+    else if(rCat==='benja') S.cat_benja=(S.cat_benja||0)+rPts;
+    else if(rCat==='pareja') S.cat_pareja=(S.cat_pareja||0)+rPts;
+    S.rachaCorrect++; S.rachaHistory.push('correct'); fireConfetti();
+  } else {
+    S.rachaPoints=(S.rachaPoints||0)-15;
+    S.rachaWrong++; S.rachaHistory.push('wrong');
+  }
   S.rachaIdx++;
   save(); renderRachaDots();
   const remaining=5-S.rachaIdx;
@@ -1369,7 +1445,7 @@ async function rachaWin(){
   document.getElementById('rt-win').style.display='block';
   document.getElementById('rt-win-num').textContent='...';
   try{
-    const payload=JSON.stringify({action:'register',nombre:S.name,puntaje:0,tiempo:0,foto:''});
+    const payload=JSON.stringify({action:'register',nombre:S.name,puntaje:Math.max(0,S.rachaPoints||0),tiempo:0,foto:'',cat_javi:Math.round(S.cat_javi||0),cat_benja:Math.round(S.cat_benja||0),cat_pareja:Math.round(S.cat_pareja||0)});
     const res=await fetch(GAS_API_URL,{method:'POST',body:payload});
     const d=await res.json();
     if(d.success){
@@ -1450,7 +1526,7 @@ async function submitParticipation(){
   document.getElementById('submit-btn').disabled=true;
   document.getElementById('submit-loader').style.display='flex';
   const tiempo=S.startedAt?Math.round((Date.now()-S.startedAt)/1000):9999;
-  const payload=JSON.stringify({action:'register',nombre:S.name,puntaje:Math.round(totalScore()),tiempo,foto:selfieB64});
+  const payload=JSON.stringify({action:'register',nombre:S.name,puntaje:Math.round(totalScore()),tiempo,foto:selfieB64,cat_javi:Math.round(S.cat_javi||0),cat_benja:Math.round(S.cat_benja||0),cat_pareja:Math.round(S.cat_pareja||0)});
   let lastErr;
   for(let attempt=0;attempt<3;attempt++){
     try{
@@ -1580,12 +1656,61 @@ function renderLeaderboard(all){
 }
 function expandLeaderboard(){ renderLeaderboard(true); }
 
+function renderScoreBoard(){
+  const el=document.getElementById('lb-scores');
+  if(!el||!lbData||!lbData.length){ if(el) el.innerHTML='<div class="empty">Sin datos</div>'; return; }
+  const sorted=[...lbData].sort((a,b)=>(b.puntaje_total||0)-(a.puntaje_total||0));
+  el.innerHTML=sorted.map((p,i)=>{
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    const tiempo=p.mejor_tiempo?`<span style="font-size:.72rem;color:#b08a6e;margin-left:6px">⚡ ${p.mejor_tiempo}s</span>`:'';
+    return `<div class="lb-row" style="${i===0?'background:rgba(201,169,110,.08);border-radius:10px;padding:8px 6px;':'padding:8px 6px;'}border-bottom:1px solid rgba(185,155,90,.1)">
+      <div class="lb-rank" style="font-size:.9rem;min-width:28px">${medal||`<span style="color:#a89e94;font-size:.82rem">${i+1}</span>`}</div>
+      <div class="lb-name" style="flex:1">${esc(p.nombre)}${tiempo}</div>
+      <div style="font-family:'Raleway',sans-serif;font-weight:700;font-size:.88rem;color:#7a6530">${(p.puntaje_total||0).toLocaleString()} pts</div>
+    </div>`;
+  }).join('');
+}
+
+let _destSlides=[], _destIdx=0, _destTimer=null;
+function renderDestacados(data){
+  if(!data||data.length<3){ document.getElementById('destacados-card').style.display='none'; return; }
+  const slides=[];
+  // Más correcto/a → mayor puntaje_total
+  const topScore=[...data].sort((a,b)=>(b.puntaje_total||0)-(a.puntaje_total||0))[0];
+  if(topScore) slides.push({label:'Más respuestas correctas totales 🏆', name:topScore.nombre});
+  // Más rápido/a → menor mejor_tiempo (>0)
+  const fastest=[...data].filter(d=>(d.mejor_tiempo||0)>0).sort((a,b)=>(a.mejor_tiempo||9999)-(b.mejor_tiempo||9999))[0];
+  if(fastest&&fastest.nombre!==topScore?.nombre) slides.push({label:'Más rápido/a ⚡️', name:fastest.nombre});
+  // Por categoría — si el Supabase los devuelve en el futuro
+  const cats=[{label:'Más respuestas correctas sobre Javi 🎀',key:'cat_javi'},{label:'Más respuestas correctas sobre Benja 🌚',key:'cat_benja'},{label:'Más respuestas correctas de la pareja 👩‍❤️‍💋‍👨',key:'cat_pareja'}];
+  cats.forEach(c=>{
+    const top=[...data].filter(d=>(d[c.key]||0)>0).sort((a,b)=>(b[c.key]||0)-(a[c.key]||0))[0];
+    if(top) slides.push({label:c.label,name:top.nombre});
+  });
+  _destSlides=slides;
+  if(!_destSlides.length) return;
+  document.getElementById('destacados-card').style.display='block';
+  showDestSlide(0);
+  if(_destTimer) clearInterval(_destTimer);
+  _destTimer=setInterval(()=>{ _destIdx=(_destIdx+1)%_destSlides.length; showDestSlide(_destIdx); },3500);
+}
+function showDestSlide(i){
+  _destIdx=i;
+  const s=_destSlides[i];
+  const slide=document.getElementById('destacados-slide');
+  slide.innerHTML=`<div class="dest-slide-in"><div style="font-size:.8rem;color:#9A8F85;margin-bottom:6px">${s.label}</div><div style="font-family:'Brittany Signature',cursive;font-size:2rem;color:#4a3824;line-height:1.2">${esc(s.name)}</div></div>`;
+  const dots=document.getElementById('destacados-dots');
+  dots.innerHTML=_destSlides.map((_,j)=>`<div onclick="showDestSlide(${j})" style="width:7px;height:7px;border-radius:50%;cursor:pointer;transition:background .2s;background:${j===i?'rgba(185,155,90,.85)':'rgba(185,155,90,.25)'}"></div>`).join('');
+}
+
 async function loadLeaderboard(){
   const data=await api('leaderboard');
   const el=document.getElementById('lb-list');
   if(!data||!data.length){ el.innerHTML='<div class="empty">Aún no hay participantes</div>'; return; }
   lbData=data;
   renderLeaderboard(false);
+  renderScoreBoard();
+  renderDestacados(data);
 }
 
 async function loadCount(){

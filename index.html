@@ -722,7 +722,7 @@
         </div>
         <div id="rt-fichas-badge" style="display:none;background:rgba(201,169,110,.13);border:1px solid rgba(185,155,90,.35);border-radius:14px;padding:12px 16px;margin-bottom:14px;text-align:center">
           <div id="rt-fichas-text" style="font-size:.9rem;font-weight:700;color:#7a6530"></div>
-          <div style="font-size:.75rem;color:#9A8F85;margin-top:4px">Mientras más puntos, más fichas 🎯</div>
+          <div style="font-size:.75rem;color:#9A8F85;margin-top:4px">¡Más fichas = más chances de ganar! 🎯</div>
         </div>
         <button class="btn btn-primary mt-4" onclick="playAgain()">Jugar de nuevo</button>
         <br>
@@ -1577,7 +1577,7 @@ async function submitParticipation(){
         renderPartNums();
         const fichBadge=document.getElementById('submitted-fichas-badge');
         const fichText=document.getElementById('submitted-fichas-text');
-        if(fichBadge&&fichText){ fichText.textContent=`🎟️ Ganaste ${fichas} ficha${fichas>1?'s':''} (${score} pts)`; fichBadge.style.display='block'; }
+        if(fichBadge&&fichText){ fichText.textContent=`🎟️ Ganaste ${fichas} ficha${fichas>1?'s':''} para el sorteo`; fichBadge.style.display='block'; }
         const isNoCard=wasAlreadyPlayed;
         document.getElementById('submitted-play-again').style.display=isNoCard?'none':'block';
         document.getElementById('submitted-nocard').style.display=isNoCard?'block':'none';

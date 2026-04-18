@@ -1468,22 +1468,11 @@ async function rachaWin(){
     if(d.success){
       if(!S.partNums) S.partNums=[];
       S.partNums.push(d.numero);
-      // Extra fichas based on racha score
-      const rScore=Math.max(0,S.rachaPoints||0);
-      const rFichas=calcFichas(rScore);
-      for(let i=1;i<rFichas;i++){
-        try{
-          const ep=JSON.stringify({action:'register',nombre:S.name,puntaje:0,tiempo:0,foto:''});
-          const er=await fetch(GAS_API_URL,{method:'POST',body:ep});
-          const ed=await er.json();
-          if(ed.success) S.partNums.push(ed.numero);
-        }catch(e){}
-      }
       S.submitted=true; save();
       document.getElementById('rt-win-num').textContent='#'+d.numero;
       const rtFichBadge=document.getElementById('rt-fichas-badge');
       const rtFichText=document.getElementById('rt-fichas-text');
-      if(rtFichBadge&&rtFichText){ rtFichText.textContent=`🎟️ Ganaste ${rFichas} ficha${rFichas>1?'s':''} (${rScore} pts)`; rtFichBadge.style.display='block'; }
+      if(rtFichBadge&&rtFichText){ rtFichText.textContent='🎟️ Ganaste 1 ficha por la racha'; rtFichBadge.style.display='block'; }
       const nums=S.partNums;
       if(nums.length>1){
         const wncard=document.getElementById('rt-win-nums-card');
@@ -1526,7 +1515,7 @@ function showAllComplete(noCard){
   showScreen('all-complete');
 }
 function totalScore(){ return Object.values(S.zones).reduce((s,z)=>s+(z.score||0),0); }
-function calcFichas(pts){ return pts>=1200?4:pts>=800?3:pts>=400?2:1; }
+function calcFichas(pts){ return pts>=800?3:pts>=400?2:1; }
 
 let selfieB64=null;
 function previewSelfie(ev){

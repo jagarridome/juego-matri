@@ -345,7 +345,8 @@
           <span id="home-nums-name" style="font-size:.78rem;color:#b08a6e"></span>
         </div>
         <div id="home-nums-list" style="display:flex;flex-wrap:wrap;gap:6px"></div>
-        <div id="home-nocard-hint" style="display:none;margin-top:10px;font-size:.76rem;color:#9A8F85;line-height:1.4">🎯 Ya usaste tus cartones — pero puedes seguir jugando</div>
+        <div id="home-fichas-hint" style="display:none;margin-top:8px;font-size:.78rem;font-weight:600;color:#7a6530"></div>
+        <div id="home-nocard-hint" style="display:none;margin-top:6px;font-size:.76rem;color:#9A8F85;line-height:1.4">🎯 Ya usaste tus cartones — pero puedes seguir jugando</div>
         <button onclick="startFromHome()" style="background:none;border:none;color:#b08a6e;font-family:'Raleway',sans-serif;font-size:.78rem;cursor:pointer;margin-top:10px;text-decoration:underline;text-underline-offset:3px">Jugar de nuevo →</button>
       </div>
 
@@ -1092,6 +1093,8 @@ function renderPartNums(){
     hcard.style.display=(nums.length>0&&S.name)?'block':'none';
     if(hname) hname.textContent=S.name;
     hlist.innerHTML=chips;
+    const hfichas=document.getElementById('home-fichas-hint');
+    if(hfichas){ hfichas.textContent=`🎟️ Tienes ${nums.length} número${nums.length>1?'s':''} en el sorteo`; hfichas.style.display=nums.length>0?'block':'none'; }
     const hhint=document.getElementById('home-nocard-hint');
     if(hhint) hhint.style.display=nums.length>=2?'block':'none';
     // Ocultar botón "¡Jugar!" si ya hay números — el de "Jugar de nuevo" en esta card hace su función

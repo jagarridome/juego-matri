@@ -1651,13 +1651,16 @@ async function api(action){
 let lbData=[];
 function renderLeaderboard(all){
   const el=document.getElementById('lb-list');
+  if(!el||!lbData||!lbData.length){ if(el) el.innerHTML='<div class="empty">Aún no hay participantes</div>'; return; }
   const more=document.getElementById('lb-more');
-  const maxP=lbData[0].participaciones;
-  const rows=all?lbData:lbData.slice(0,10);
+  const sorted=[...lbData].sort((a,b)=>(b.participaciones||0)-(a.participaciones||0));
+  const maxP=sorted[0].participaciones||0;
+  const rows=all?sorted:sorted.slice(0,10);
   el.innerHTML=rows.map((p,i)=>{
-    const gold=p.participaciones===maxP;
+    const pts=p.participaciones||0;
+    const gold=pts===maxP&&maxP>0;
     const rank=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-    const fichas=p.participaciones===1?'1 ficha':`${p.participaciones} fichas`;
+    const fichas=pts===1?'1 ficha':`${pts} fichas`;
     return `<div class="lb-row ${gold?'gold-row':''}">
       <div class="lb-rank ${gold?'gold':''}">${rank}</div>
       <div class="lb-name">${esc(p.nombre)}</div>
@@ -1790,7 +1793,7 @@ function checkPw(){
   if(document.getElementById('raffle-pw').value===RAFFLE_PASSWORD){
     document.getElementById('raffle-gate').style.display='none';
     document.getElementById('raffle-main').style.display='block';
-    loadRaffle(); checkSpinLock();
+    loadRaffle(); checkSpinLock(); loadLeaderboard();
   } else {
     document.getElementById('pw-err').style.display='block';
   }

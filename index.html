@@ -660,6 +660,10 @@
         <div style="color:#a89e94;font-size:.83rem;margin-bottom:8px">Todos tus números 🎟️</div>
         <div id="part-nums-list" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
       </div>
+      <div id="submitted-fichas-badge" style="display:none;background:rgba(201,169,110,.13);border:1px solid rgba(185,155,90,.35);border-radius:14px;padding:12px 16px;margin-bottom:14px;text-align:center">
+        <div id="submitted-fichas-text" style="font-size:.9rem;font-weight:700;color:#7a6530"></div>
+        <div style="font-size:.75rem;color:#9A8F85;margin-top:4px">Mientras más puntos, más fichas 🎯</div>
+      </div>
       <div class="card card-green mb-4">
         <div style="color:#4ade80;font-size:.88rem">Tu foto ya aparece en la galería ✨</div>
       </div>
@@ -715,6 +719,10 @@
         <div id="rt-win-nums-card" class="card mb-4" style="display:none">
           <div style="color:#a89e94;font-size:.83rem;margin-bottom:8px">Todos tus números 🎟️</div>
           <div id="rt-win-nums-list" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+        </div>
+        <div id="rt-fichas-badge" style="display:none;background:rgba(201,169,110,.13);border:1px solid rgba(185,155,90,.35);border-radius:14px;padding:12px 16px;margin-bottom:14px;text-align:center">
+          <div id="rt-fichas-text" style="font-size:.9rem;font-weight:700;color:#7a6530"></div>
+          <div style="font-size:.75rem;color:#9A8F85;margin-top:4px">Mientras más puntos, más fichas 🎯</div>
         </div>
         <button class="btn btn-primary mt-4" onclick="playAgain()">Jugar de nuevo</button>
         <br>
@@ -1460,8 +1468,22 @@ async function rachaWin(){
     if(d.success){
       if(!S.partNums) S.partNums=[];
       S.partNums.push(d.numero);
+      // Extra fichas based on racha score
+      const rScore=Math.max(0,S.rachaPoints||0);
+      const rFichas=calcFichas(rScore);
+      for(let i=1;i<rFichas;i++){
+        try{
+          const ep=JSON.stringify({action:'register',nombre:S.name,puntaje:0,tiempo:0,foto:''});
+          const er=await fetch(GAS_API_URL,{method:'POST',body:ep});
+          const ed=await er.json();
+          if(ed.success) S.partNums.push(ed.numero);
+        }catch(e){}
+      }
       S.submitted=true; save();
       document.getElementById('rt-win-num').textContent='#'+d.numero;
+      const rtFichBadge=document.getElementById('rt-fichas-badge');
+      const rtFichText=document.getElementById('rt-fichas-text');
+      if(rtFichBadge&&rtFichText){ rtFichText.textContent=`🎟️ Ganaste ${rFichas} ficha${rFichas>1?'s':''} (${rScore} pts)`; rtFichBadge.style.display='block'; }
       const nums=S.partNums;
       if(nums.length>1){
         const wncard=document.getElementById('rt-win-nums-card');
@@ -1504,6 +1526,7 @@ function showAllComplete(noCard){
   showScreen('all-complete');
 }
 function totalScore(){ return Object.values(S.zones).reduce((s,z)=>s+(z.score||0),0); }
+function calcFichas(pts){ return pts>=1200?4:pts>=800?3:pts>=400?2:1; }
 
 let selfieB64=null;
 function previewSelfie(ev){
@@ -1547,11 +1570,26 @@ async function submitParticipation(){
       if(d.success){
         S.submitted=true; S.partNum=d.numero;
         if(!S.partNums) S.partNums=[];
+        const wasAlreadyPlayed=S.partNums.length>=1;
         S.partNums.push(d.numero);
+        // Extra fichas based on score
+        const score=Math.round(totalScore());
+        const fichas=calcFichas(score);
+        for(let i=1;i<fichas;i++){
+          try{
+            const ep=JSON.stringify({action:'register',nombre:S.name,puntaje:0,tiempo:0,foto:''});
+            const er=await fetch(GAS_API_URL,{method:'POST',body:ep});
+            const ed=await er.json();
+            if(ed.success) S.partNums.push(ed.numero);
+          }catch(e){}
+        }
         save();
         document.getElementById('part-num').textContent='#'+d.numero;
         renderPartNums();
-        const isNoCard=(S.partNums||[]).length>=2;
+        const fichBadge=document.getElementById('submitted-fichas-badge');
+        const fichText=document.getElementById('submitted-fichas-text');
+        if(fichBadge&&fichText){ fichText.textContent=`🎟️ Ganaste ${fichas} ficha${fichas>1?'s':''} (${score} pts)`; fichBadge.style.display='block'; }
+        const isNoCard=wasAlreadyPlayed;
         document.getElementById('submitted-play-again').style.display=isNoCard?'none':'block';
         document.getElementById('submitted-nocard').style.display=isNoCard?'block':'none';
         showScreen('submitted'); bigConfetti();

@@ -1011,7 +1011,7 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById('screen-'+id);
   if(el){ el.classList.add('active'); window.scrollTo(0,0); }
-  if(id==='home') stopQR();
+  if(id==='home'){ stopQR(); loadWinner(); }
   if(id==='respuestas') renderRespuestas();
 }
 function renderRespuestas(){

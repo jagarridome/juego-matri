@@ -663,7 +663,16 @@
       <div class="card card-green mb-4">
         <div style="color:#4ade80;font-size:.88rem">Tu foto ya aparece en la galería ✨</div>
       </div>
-      <button class="btn btn-primary mt-4" onclick="playAgain()">Jugar de nuevo</button>
+      <!-- Modo cartón: aparece en el 1er envío -->
+      <div id="submitted-play-again" style="display:none">
+        <button class="btn btn-primary mt-4" onclick="playAgain()">Jugar de nuevo</button>
+      </div>
+      <!-- Modo racha: aparece desde el 2do envío en adelante -->
+      <div id="submitted-nocard" style="display:none;background:rgba(201,169,110,.10);border:1px solid rgba(185,155,90,.28);border-radius:14px;padding:14px 16px;margin-top:16px;text-align:center">
+        <div style="font-size:.88rem;font-weight:700;color:#7a6530;margin-bottom:4px">🔥 ¿Se acabaron los cartones?<br>¡No importa, no pierdas la racha!</div>
+        <div style="font-size:.76rem;color:#9A8F85;line-height:1.4;margin-bottom:10px">Sigue respondiendo y suma más números al sorteo.</div>
+        <button onclick="startRacha()" class="btn btn-gold" style="font-size:.85rem;padding:10px 24px">🎲 Seguir jugando</button>
+      </div>
       <button onclick="showScreen('home')" style="background:none;border:none;color:#9A8F85;font-family:'Raleway',sans-serif;font-size:.85rem;cursor:pointer;padding:12px 8px;text-decoration:underline;text-underline-offset:3px;">Volver al inicio</button>
     </div>
   </div>
@@ -1542,6 +1551,9 @@ async function submitParticipation(){
         save();
         document.getElementById('part-num').textContent='#'+d.numero;
         renderPartNums();
+        const isNoCard=(S.partNums||[]).length>=2;
+        document.getElementById('submitted-play-again').style.display=isNoCard?'none':'block';
+        document.getElementById('submitted-nocard').style.display=isNoCard?'block':'none';
         showScreen('submitted'); bigConfetti();
         return;
       } else { lastErr=d.error||'Error del servidor'; break; }
